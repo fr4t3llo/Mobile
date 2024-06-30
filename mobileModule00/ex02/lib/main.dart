@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'mybuttons.dart';
+import 'package:device_preview_plus/device_preview_plus.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => MyApp(), // Wrap your app
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  void clickMe() {
-    debugPrint("Button pressed");
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: MaterialApp(
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           backgroundColor: Colors.black,
@@ -26,16 +30,36 @@ class MyApp extends StatelessWidget {
               style: TextStyle(fontFamily: 'my'),
             ),
           ),
-          body: SafeArea(
-            child: Stack(children: [
-              Align(
-                alignment: Alignment.bottomCenter,
+          body: Column(children: [
+            const TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'hello',
+                hintStyle: TextStyle(color: Colors.amber),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10),
+            const TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'hello',
+                hintStyle: TextStyle(color: Colors.amber),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10),
+            const Spacer(),
+            Expanded(
+              child: Center(
                 child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
+                    // physics: const NeverScrollableScrollPhysics(),
                     itemCount: 20,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4),
+                            crossAxisCount: 4,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10),
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0) {
                         return const Mybuttons(
@@ -280,8 +304,8 @@ class MyApp extends StatelessWidget {
                       return null;
                     }),
               ),
-            ]),
-          ),
+            )
+          ]),
         ),
       ),
     );

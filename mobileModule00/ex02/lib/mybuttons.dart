@@ -13,25 +13,28 @@ class Mybuttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () {
-          debugPrint('button pressed: ${buttonText.data}');
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(120),
-            color: buttonColor,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        double buttonSize =
+            constraints.maxWidth / 2 - 16.0; // calculate the button size
+        return GestureDetector(
+          onTap: () {
+            debugPrint('button pressed: ${buttonText.data}');
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(120),
+              color: buttonColor,
+            ),
+            width: buttonSize,
+            height: buttonSize,
+            child: Center(
+              child: buttonText,
+            ),
+            // color: Colors.black,
           ),
-          width: 20,
-          height: 20,
-          child: Center(
-            child: buttonText,
-          ),
-          // color: Colors.black,
-        ),
-      ),
+        );
+      },
     );
   }
 }
