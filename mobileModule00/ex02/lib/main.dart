@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'mybuttons.dart';
 import 'package:device_preview_plus/device_preview_plus.dart';
 
@@ -6,7 +8,7 @@ void main() {
   runApp(
     DevicePreview(
       enabled: true,
-      builder: (context) => MyApp(), // Wrap your app
+      builder: (context) => const MyApp(), // Wrap your app
     ),
   );
 }
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
         builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          backgroundColor: Colors.black,
+          // backgroundColor: Colors.black,
           appBar: AppBar(
             backgroundColor: Colors.blue,
             title: const Text(
@@ -30,282 +32,498 @@ class MyApp extends StatelessWidget {
               style: TextStyle(fontFamily: 'my'),
             ),
           ),
-          body: Column(children: [
-            const TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'hello',
-                hintStyle: TextStyle(color: Colors.amber),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 10),
-            const TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'hello',
-                hintStyle: TextStyle(color: Colors.amber),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Spacer(),
-            Expanded(
-              child: Center(
-                child: GridView.builder(
-                    // physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 20,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10),
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            'AC',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 40,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 1) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            'C',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 40,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 221, 15, 0),
-                        );
-                      }
-                      if (index == 2) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '+',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 241, 139, 7),
-                        );
-                      }
-                      if (index == 3) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '-',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 241, 139, 7),
-                        );
-                      }
-                      if (index == 4) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '7',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 5) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '8',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 6) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '9',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 7) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '/',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 241, 139, 7),
-                        );
-                      }
-                      if (index == 8) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '4',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 9) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '5',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 10) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '6',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 11) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            'x',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 241, 139, 7),
-                        );
-                      }
-                      if (index == 12) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '1',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 13) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '2',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 14) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '3',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 15) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '=',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 241, 139, 7),
-                        );
-                      }
-                      if (index == 16) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '0',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 17) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '.',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 18) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '00',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      if (index == 19) {
-                        return const Mybuttons(
-                          buttonText: Text(
-                            '000',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 50,
-                                fontFamily: 'my'),
-                          ),
-                          buttonColor: Color.fromARGB(255, 145, 145, 145),
-                        );
-                      }
-                      return null;
-                    }),
-              ),
-            )
-          ]),
+          body: OrientationBuilder(builder: (context, orientation) {
+            double containerWidth = orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.width * 0.2
+                : MediaQuery.of(context).size.width * 0.08;
+            double containerHeight = orientation == Orientation.portrait
+                ? MediaQuery.of(context).size.height * 0.09
+                : MediaQuery.of(context).size.height * 0.09;
+
+            return Stack(
+              fit: StackFit.expand,
+              children: [
+                const Positioned(
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(2),
+                        child: TextField(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(2),
+                        child: TextField(),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: AC');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    'AC',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: C');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: Colors.red,
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    'C',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: +');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: const Color.fromARGB(255, 241, 139, 7),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '+',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: -');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: const Color.fromARGB(255, 241, 139, 7),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '-',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 7');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '7',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 8');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '8',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 9');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '9',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: x');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: const Color.fromARGB(255, 241, 139, 7),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    'x',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 4');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '4',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 5');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '5',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 6');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '6',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: /');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: const Color.fromARGB(255, 241, 139, 7),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '/',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 1');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '1',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 2');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '2',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 3');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '3',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: =');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: const Color.fromARGB(255, 241, 139, 7),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '=',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 0');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '0',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: .');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '.',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 00');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '00',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                debugPrint('button pressed: 000');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color:
+                                      const Color.fromARGB(255, 145, 145, 145),
+                                ),
+                                width: containerWidth,
+                                height: containerHeight,
+                                child: const Center(
+                                  child: Text(
+                                    '000',
+                                    style: TextStyle(
+                                        color: Colors.white, fontFamily: 'my'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      ]),
+                )
+              ],
+            );
+          }),
         ),
       ),
     );
