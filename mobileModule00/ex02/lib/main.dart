@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'mybuttons.dart';
 import 'package:device_preview_plus/device_preview_plus.dart';
 
 void main() {
@@ -52,11 +49,15 @@ class MyApp extends StatelessWidget {
                     children: <Widget>[
                       Padding(
                         padding: EdgeInsets.all(2),
-                        child: TextField(),
+                        child: TextField(
+                          decoration: InputDecoration(border: InputBorder.none),
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(2),
-                        child: TextField(),
+                        child: TextField(
+                          decoration: InputDecoration(border: InputBorder.none),
+                        ),
                       ),
                     ],
                   ),
@@ -87,7 +88,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     'AC',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -107,7 +110,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     'C',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -127,7 +132,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '+',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -147,7 +154,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '-',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -176,7 +185,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '7',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -197,7 +208,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '8',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -218,7 +231,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '9',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -238,7 +253,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     'x',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -267,7 +284,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '4',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -288,7 +307,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '5',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -309,7 +330,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '6',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -329,7 +352,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '/',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -358,7 +383,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '1',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -379,7 +406,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '2',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -400,7 +429,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '3',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -420,7 +451,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '=',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -449,7 +482,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '0',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -470,7 +505,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '.',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -491,7 +528,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '00',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
@@ -512,7 +551,9 @@ class MyApp extends StatelessWidget {
                                   child: Text(
                                     '000',
                                     style: TextStyle(
-                                        color: Colors.white, fontFamily: 'my'),
+                                        color: Colors.white,
+                                        fontFamily: 'my',
+                                        fontSize: 25),
                                   ),
                                 ),
                               ),
