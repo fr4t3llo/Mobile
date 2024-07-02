@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          // backgroundColor: Colors.black,
+          backgroundColor: Colors.black,
           appBar: AppBar(
             backgroundColor: Colors.blue,
             title: const Text(
@@ -36,7 +36,6 @@ class MyApp extends StatelessWidget {
             double containerHeight = orientation == Orientation.portrait
                 ? MediaQuery.of(context).size.height * 0.09
                 : MediaQuery.of(context).size.height * 0.09;
-
             return Stack(
               fit: StackFit.expand,
               children: [
@@ -50,12 +49,18 @@ class MyApp extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(2),
                         child: TextField(
-                          decoration: InputDecoration(border: InputBorder.none),
+                          style:
+                              TextStyle(color: Colors.white, fontFamily: 'my'),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(2),
                         child: TextField(
+                          style:
+                              TextStyle(color: Colors.white, fontFamily: 'my'),
                           decoration: InputDecoration(border: InputBorder.none),
                         ),
                       ),
