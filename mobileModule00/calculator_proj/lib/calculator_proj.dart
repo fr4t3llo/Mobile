@@ -32,27 +32,12 @@ class _FtCalculatorState extends State<FtCalculator> {
                     style: const TextStyle(
                         color: Colors.white,
                         fontFamily: 'my',
-                        fontSize: 30, 
+                        fontSize: 30,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-            ),  
-            // SingleChildScrollView(
-            //   reverse: true,
-            //   child: Container(
-            //     alignment: Alignment.bottomRight,
-            //     padding: const EdgeInsets.all(12),
-            //     child: Text(
-            //       n2.isEmpty ? "0" : n2,
-            //       style: const TextStyle(
-            //           color: Colors.white,
-            //           fontFamily: 'my',
-            //           fontSize: 30,
-            //           fontWeight: FontWeight.bold),
-            //     ),
-            //   ),
-            // ),
+            ),
             Wrap(
               children: Buttons.buttonValues
                   .map((value) => SizedBox(
@@ -70,12 +55,41 @@ class _FtCalculatorState extends State<FtCalculator> {
     );
   }
 
-  void clickButton(String value) {
-    setState(() {
+  void assignValue(String value) {
+    if (value != Buttons.dot && int.tryParse(value) == null) {
+      if (operation.isNotEmpty && n2.isNotEmpty) {}
+      operation = value;
+    } else if (n1.isEmpty || operation.isEmpty) {
+      if (value == Buttons.dot && n1.contains(Buttons.dot)) return;
+      if (value == Buttons.dot && (n1.isEmpty || n1 == Buttons.dot)) {
+        value = "0.";
+      }
       n1 += value;
-      operation += value;
+    } else if (n2.isEmpty || operation.isNotEmpty) {
+      if (value == Buttons.dot && n2.contains(Buttons.dot)) return;
+      if (value == Buttons.dot && (n2.isEmpty || n2 == Buttons.dot)) {
+        value = "0.";
+      }
       n2 += value;
-    });
+    }
+    if (value == Buttons.delete) {
+      makeDelete(value);
+    }
+    setState(() {});
+  }
+
+  void clickButton(String value) {
+    if (value == Buttons.delete) {
+      makeDelete(value);
+      return;
+    }
+    assignValue(value);
+  }
+
+  void makeDelete(value) {
+    if (n2.isNotEmpty) {
+      n2 = n2.substring(0, n2.length - 1);
+    }
   }
 
   Widget createBtn(value) {
