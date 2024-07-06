@@ -82,6 +82,13 @@ class _FtCalculatorState extends State<FtCalculator> {
     if (value == Buttons.delete) {
       makeDelete(value);
       return;
+    } else if (operation.isNotEmpty) {
+      operation = "";
+    }
+    if (value == Buttons.clear) {
+      operation = "";
+      n1 = "";
+      n2 = "";
     }
     assignValue(value);
   }
