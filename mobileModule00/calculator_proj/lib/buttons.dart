@@ -1,5 +1,4 @@
-class Btn {
- 
+class Buttons {
   //operations
   static const String delete = "D";
   static const String clear = "C";
@@ -9,9 +8,10 @@ class Btn {
   static const String subtract = "-";
   static const String calculate = "=";
   static const String dot = ".";
-  
+
   //numbers
   static const String number_0 = "0";
+  static const String number_00 = "00";
   static const String number_1 = "1";
   static const String number_2 = "2";
   static const String number_3 = "3";
@@ -21,26 +21,27 @@ class Btn {
   static const String number_7 = "7";
   static const String number_8 = "8";
   static const String number_9 = "9";
-  
+
   //My list
   static const List<String> buttonValues = [
     delete,
     clear,
     multiply,
+    divide,
     number_7,
     number_8,
     number_9,
-    divide,
+    subtract,
     number_4,
     number_5,
     number_6,
-    subtract,
+    add,
     number_1,
     number_2,
     number_3,
-    add,
-    number_0,
-    dot,
     calculate,
+    number_0,
+    number_00,
+    dot,
   ];
 }
