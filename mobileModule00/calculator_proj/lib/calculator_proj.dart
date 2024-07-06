@@ -38,21 +38,21 @@ class _FtCalculatorState extends State<FtCalculator> {
                 ),
               ),
             ),
-            SingleChildScrollView(
-              reverse: true,
-              child: Container(
-                alignment: Alignment.bottomRight,
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  n2.isEmpty ? "0" : n2,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'my',
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
+            // SingleChildScrollView(
+            //   reverse: true,
+            //   child: Container(
+            //     alignment: Alignment.bottomRight,
+            //     padding: const EdgeInsets.all(12),
+            //     child: Text(
+            //       n2.isEmpty ? "0" : n2,
+            //       style: const TextStyle(
+            //           color: Colors.white,
+            //           fontFamily: 'my',
+            //           fontSize: 30,
+            //           fontWeight: FontWeight.bold),
+            //     ),
+            //   ),
+            // ),
             Wrap(
               children: Buttons.buttonValues
                   .map((value) => SizedBox(
