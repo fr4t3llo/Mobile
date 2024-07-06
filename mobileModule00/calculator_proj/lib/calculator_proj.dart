@@ -32,7 +32,7 @@ class _FtCalculatorState extends State<FtCalculator> {
                     style: const TextStyle(
                         color: Colors.white,
                         fontFamily: 'my',
-                        fontSize: 30,
+                        fontSize: 30, 
                         fontWeight: FontWeight.bold),
                   ),
                 ),
