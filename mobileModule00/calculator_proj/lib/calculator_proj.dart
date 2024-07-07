@@ -86,17 +86,29 @@ class _FtCalculatorState extends State<FtCalculator> {
       operation = "";
     }
     if (value == Buttons.clear) {
-      operation = "";
-      n1 = "";
-      n2 = "";
+      clear(value);
+      return;
     }
     assignValue(value);
+  }
+
+  void clear(value) {
+    setState(() {
+      n1 = "";
+      operation = "";
+      n2 = "";
+    });
   }
 
   void makeDelete(value) {
     if (n2.isNotEmpty) {
       n2 = n2.substring(0, n2.length - 1);
+    } else if (operation.isNotEmpty) {
+      operation = "";
+    } else if (n1.isNotEmpty) {
+      n1 = n1.substring(0, n1.length - 1);
     }
+    setState(() {});
   }
 
   Widget createBtn(value) {
@@ -125,7 +137,7 @@ class _FtCalculatorState extends State<FtCalculator> {
               value,
               style: const TextStyle(
                   color: Colors.white,
-                  fontFamily: 'my',
+                  // fontFamily: 'my',
                   fontWeight: FontWeight.bold,
                   fontSize: 18),
             ),
