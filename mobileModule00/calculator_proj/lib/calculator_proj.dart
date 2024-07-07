@@ -12,22 +12,25 @@ class _FtCalculatorState extends State<FtCalculator> {
   String n1 = "";
   String operation = "";
   String n2 = "";
+
+  String expressionField = ""; // New variable to store full expression
+  String resultField = ""; // New variable to store the result
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: const Text(
-            'Calculator',
-            style: TextStyle(fontFamily: 'my'),
+      home: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.blue,
+            title: const Text(
+              'Calculator',
+              style: TextStyle(fontFamily: 'my', fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
-        backgroundColor: Colors.black,
-        body: SafeArea(
-          bottom: false,
-          child: Column(
+          backgroundColor: Colors.black,
+          body: Column(
             children: [
               Expanded(
                 child: SingleChildScrollView(
@@ -36,7 +39,7 @@ class _FtCalculatorState extends State<FtCalculator> {
                     alignment: Alignment.bottomRight,
                     padding: const EdgeInsets.all(12),
                     child: Text(
-                      "$n1$operation$n2".isEmpty ? "0" : "$n1$operation$n2",
+                      expressionField.isEmpty ? "0" : expressionField,
                       style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'my',
@@ -46,20 +49,18 @@ class _FtCalculatorState extends State<FtCalculator> {
                   ),
                 ),
               ),
-              Expanded(   
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Container(
-                    alignment: Alignment.bottomRight,
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      "$n1$operation$n2".isEmpty ? "0" : "$n1$operation$n2",
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'my',
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold),
-                    ),
+              SingleChildScrollView(
+                reverse: true,
+                child: Container(
+                  alignment: Alignment.bottomRight,
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    resultField.isEmpty ? "0" : resultField,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'my',
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -104,7 +105,15 @@ class _FtCalculatorState extends State<FtCalculator> {
     if (value == Buttons.delete) {
       makeDelete(value);
     }
+    updateFirstField();
     setState(() {});
+  }
+
+  void updateFirstField() {
+    expressionField = "$n1$operation$n2";
+    if (expressionField.isEmpty) {
+      expressionField = "0";
+    }
   }
 
   void clickButton(String value) {
@@ -156,12 +165,14 @@ class _FtCalculatorState extends State<FtCalculator> {
       default:
     }
     setState(() {
-      n1 = result.toString();
-      if (n1.endsWith(".0")) {
-        n1 = n1.substring(0, n1.length - 2);
+      resultField = result.toString();
+      if (resultField.endsWith(".0")) {
+        resultField = resultField.substring(0, resultField.length - 2);
       }
       n2 = "";
+      n1 = "";
       operation = "";
+      updateFirstField();
     });
   }
 
@@ -170,6 +181,8 @@ class _FtCalculatorState extends State<FtCalculator> {
       n1 = "";
       operation = "";
       n2 = "";
+      expressionField = "";
+      resultField = "";
     });
   }
 
@@ -181,6 +194,7 @@ class _FtCalculatorState extends State<FtCalculator> {
     } else if (n1.isNotEmpty) {
       n1 = n1.substring(0, n1.length - 1);
     }
+    updateFirstField();
     setState(() {});
   }
 

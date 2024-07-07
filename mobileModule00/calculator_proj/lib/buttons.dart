@@ -1,7 +1,7 @@
 class Buttons {
   //operations
-  static const String delete = "AC";
-  static const String clear = "C";
+  static const String delete = "C";
+  static const String clear = "AC";
   static const String multiply = "x";
   static const String divide = "÷";
   static const String add = "+";
