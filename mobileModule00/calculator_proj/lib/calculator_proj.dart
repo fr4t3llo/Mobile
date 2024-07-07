@@ -85,7 +85,7 @@ class _FtCalculatorState extends State<FtCalculator> {
   void assignValue(String value) {
     if (value != Buttons.dot && int.tryParse(value) == null) {
       if (operation.isNotEmpty && n2.isNotEmpty) {
-        calculate();
+        // calculate();
       }
       operation = value;
     } else if (n1.isEmpty || operation.isEmpty) {
