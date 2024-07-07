@@ -13,8 +13,8 @@ class _FtCalculatorState extends State<FtCalculator> {
   String operation = "";
   String n2 = "";
 
-  String expressionField = ""; // New variable to store full expression
-  String resultField = ""; // New variable to store the result
+  String expressionField = ""; 
+  String resultField = ""; 
 
   @override
   Widget build(BuildContext context) {
