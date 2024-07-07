@@ -35,7 +35,7 @@ class _PageState extends State<Page> {
       if (isTextSwitched) {
         displayText = 'A simple text';
       } else {
-        displayText = 'hello world!';
+        displayText = 'Hello World!';
       }
       isTextSwitched = !isTextSwitched;
     });

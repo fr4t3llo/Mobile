@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:device_preview_plus/device_preview_plus.dart';
 
 void main() {
-  runApp(
-    DevicePreview(
-      enabled: true,
-      builder: (context) => const MyApp(), // Wrap your app
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -17,8 +11,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: MaterialApp(
-        locale: DevicePreview.locale(context),
-        builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           backgroundColor: Colors.black,
@@ -49,9 +41,12 @@ class MyApp extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(2),
                         child: TextField(
+                          readOnly: true,
                           style:
                               TextStyle(color: Colors.white, fontFamily: 'my'),
                           decoration: InputDecoration(
+                            hintText: '0',
+                            hintStyle: TextStyle(color: Colors.white),
                             border: InputBorder.none,
                           ),
                         ),
@@ -59,9 +54,14 @@ class MyApp extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(2),
                         child: TextField(
+                          readOnly: true,
                           style:
                               TextStyle(color: Colors.white, fontFamily: 'my'),
-                          decoration: InputDecoration(border: InputBorder.none),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: '0',
+                            hintStyle: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ],

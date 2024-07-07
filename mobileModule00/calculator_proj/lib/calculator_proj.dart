@@ -16,6 +16,13 @@ class _FtCalculatorState extends State<FtCalculator> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text(
+          'Calculator',
+          style: TextStyle(fontFamily: 'my'),
+        ),
+      ),
       backgroundColor: Colors.black,
       body: SafeArea(
         bottom: false,
@@ -32,7 +39,7 @@ class _FtCalculatorState extends State<FtCalculator> {
                     style: const TextStyle(
                         color: Colors.white,
                         fontFamily: 'my',
-                        fontSize: 30,
+                        fontSize: 40,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -183,10 +190,11 @@ class _FtCalculatorState extends State<FtCalculator> {
             child: Text(
               value,
               style: const TextStyle(
-                  color: Colors.white,
-                  // fontFamily: 'my',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
+                color: Colors.white,
+                // fontFamily: 'my',
+                fontWeight: FontWeight.bold,
+                fontSize: 33,
+              ),
             ),
           ),
         ),
