@@ -15,48 +15,67 @@ class _FtCalculatorState extends State<FtCalculator> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: const Text(
-          'Calculator',
-          style: TextStyle(fontFamily: 'my'),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: const Text(
+            'Calculator',
+            style: TextStyle(fontFamily: 'my'),
+          ),
         ),
-      ),
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                reverse: true,
-                child: Container(
-                  alignment: Alignment.bottomRight,
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    "$n1$operation$n2".isEmpty ? "0" : "$n1$operation$n2",
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'my',
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold),
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Container(
+                    alignment: Alignment.bottomRight,
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      "$n1$operation$n2".isEmpty ? "0" : "$n1$operation$n2",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'my',
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Wrap(
-              children: Buttons.buttonValues
-                  .map((value) => SizedBox(
-                        width: value == Buttons.number_0
-                            ? screenSize.width / 2
-                            : (screenSize.width / 4),
-                        height: screenSize.width / 5,
-                        child: createBtn(value),
-                      ))
-                  .toList(),
-            )
-          ],
+              Expanded(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Container(
+                    alignment: Alignment.bottomRight,
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      "$n1$operation$n2".isEmpty ? "0" : "$n1$operation$n2",
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'my',
+                          fontSize: 40,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              Wrap(
+                children: Buttons.buttonValues
+                    .map((value) => SizedBox(
+                          width: value == Buttons.number_0
+                              ? screenSize.width / 2
+                              : (screenSize.width / 4),
+                          height: screenSize.width / 5,
+                          child: createBtn(value),
+                        ))
+                    .toList(),
+              )
+            ],
+          ),
         ),
       ),
     );
