@@ -79,6 +79,17 @@ class _FtCalculatorState extends State<FtCalculator> {
   }
 
   void clickButton(String value) {
+    if ((value == Buttons.add ||
+            value == Buttons.subtract ||
+            value == Buttons.divide ||
+            value == Buttons.multiply) &&
+        (n1.isEmpty)) {
+      return;
+    }
+    if (value == Buttons.calculate) {
+      calculate();
+      return;
+    }
     if (value == Buttons.delete) {
       makeDelete(value);
       return;
@@ -90,6 +101,12 @@ class _FtCalculatorState extends State<FtCalculator> {
       return;
     }
     assignValue(value);
+  }
+
+  void calculate() {
+    if (n1.isEmpty) return;
+    if (n2.isEmpty) return;
+    if (operation.isEmpty) return;
   }
 
   void clear(value) {
