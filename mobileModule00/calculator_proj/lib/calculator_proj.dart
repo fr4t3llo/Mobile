@@ -57,7 +57,9 @@ class _FtCalculatorState extends State<FtCalculator> {
 
   void assignValue(String value) {
     if (value != Buttons.dot && int.tryParse(value) == null) {
-      if (operation.isNotEmpty && n2.isNotEmpty) {}
+      if (operation.isNotEmpty && n2.isNotEmpty) {
+        calculate();
+      }
       operation = value;
     } else if (n1.isEmpty || operation.isEmpty) {
       if (value == Buttons.dot && n1.contains(Buttons.dot)) return;
@@ -67,7 +69,8 @@ class _FtCalculatorState extends State<FtCalculator> {
       n1 += value;
     } else if (n2.isEmpty || operation.isNotEmpty) {
       if (value == Buttons.dot && n2.contains(Buttons.dot)) return;
-      if (value == Buttons.dot && (n2.isEmpty || n2 == Buttons.dot)) {
+      if (value == Buttons.dot && (n2.isEmpty || n2 == Buttons.number_0)) {
+        //check before push
         value = "0.";
       }
       n2 += value;
@@ -93,8 +96,6 @@ class _FtCalculatorState extends State<FtCalculator> {
     if (value == Buttons.delete) {
       makeDelete(value);
       return;
-    } else if (operation.isNotEmpty) {
-      operation = "";
     }
     if (value == Buttons.clear) {
       clear(value);
@@ -107,6 +108,35 @@ class _FtCalculatorState extends State<FtCalculator> {
     if (n1.isEmpty) return;
     if (n2.isEmpty) return;
     if (operation.isEmpty) return;
+
+    final double number_1 = double.parse(n1);
+    final double number_2 = double.parse(n2);
+
+    var result = 0.0;
+
+    switch (operation) {
+      case Buttons.add:
+        result = number_1 + number_2;
+        break;
+      case Buttons.multiply:
+        result = number_1 * number_2;
+        break;
+      case Buttons.subtract:
+        result = number_1 - number_2;
+        break;
+      case Buttons.divide:
+        result = number_1 / number_2;
+        break;
+      default:
+    }
+    setState(() {
+      n1 = result.toString();
+      if (n1.endsWith(".0")) {
+        n1 = n1.substring(0, n1.length - 2);
+      }
+      n2 = "";
+      operation = "";
+    });
   }
 
   void clear(value) {
