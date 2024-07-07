@@ -46,7 +46,7 @@ class _FtCalculatorState extends State<FtCalculator> {
                   ),
                 ),
               ),
-              Expanded(
+              Expanded(   
                 child: SingleChildScrollView(
                   reverse: true,
                   child: Container(
