@@ -46,6 +46,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.0
+  device_preview_plus: ^2.0.1
+  iconsax: ^0.0.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -74,6 +76,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+
+
+  fonts:
+    - family: my
+      fonts:
+        - asset: assets/fonts/CenturyGothic.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
