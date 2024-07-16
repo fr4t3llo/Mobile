@@ -23,11 +23,41 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int _index = 0;
-
-  List<Widget> content = const [
-    Icon(Iconsax.timer),
-    Icon(Iconsax.timer4),
-    Icon(Iconsax.timer5),
+  String location = '';
+  TextEditingController text1 = TextEditingController();
+  List<Widget> content = [
+    const Text(
+      'Currently',
+      style: TextStyle(
+        fontFamily: 'my',
+        fontWeight: FontWeight.bold,
+        fontSize: 25,
+      ),
+    ),
+    const Text(
+      'Today',
+      style: TextStyle(
+        fontFamily: 'my',
+        fontWeight: FontWeight.bold,
+        fontSize: 25,
+      ),
+    ),
+    const Text(
+      'Weekly',
+      style: TextStyle(
+        fontFamily: 'my',
+        fontWeight: FontWeight.bold,
+        fontSize: 25,
+      ),
+    ),
+    Text(
+      '',
+      style: TextStyle(
+        fontFamily: 'my',
+        fontWeight: FontWeight.bold,
+        fontSize: 25,
+      ),
+    ),
   ];
   @override
   Widget build(BuildContext context) {
@@ -40,14 +70,32 @@ class _MyAppState extends State<MyApp> {
             body: Center(child: content[_index]),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: _index,
-              items: [],
-              onTap: (int newIndex) {},
+              items: const [
+                BottomNavigationBarItem(
+                  label: 'Currently',
+                  icon: Icon(Iconsax.calendar_edit),
+                ),
+                BottomNavigationBarItem(
+                  label: 'Today',
+                  icon: Icon(Iconsax.calendar),
+                ),
+                BottomNavigationBarItem(
+                  label: 'Weekly',
+                  icon: Icon(Iconsax.calendar_circle),
+                ),
+              ],
+              onTap: (int newIndex) {
+                setState(() {
+                  _index = newIndex;
+                });
+              },
             ),
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
               title: Padding(
                 padding: const EdgeInsets.only(top: 6, bottom: 6),
                 child: TextField(
+                  controller: text1,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
                   ],
@@ -55,7 +103,7 @@ class _MyAppState extends State<MyApp> {
                       fontFamily: 'my', fontWeight: FontWeight.bold),
                   decoration: const InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Search : Khouribga!',
+                      hintText: 'Search location... ex:  Khouribga',
                       hintStyle: TextStyle(
                           fontFamily: 'my', fontWeight: FontWeight.w100)),
                 ),
@@ -64,7 +112,22 @@ class _MyAppState extends State<MyApp> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          String newValue = text1.text;
+                          debugPrint(newValue);
+                          content[_index] = Text(
+                            newValue.isEmpty
+                                ? 'No Location Provided'
+                                : newValue,
+                            style: TextStyle(
+                              fontFamily: 'my',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                            ),
+                          );
+                        });
+                      },
                       icon: const Icon(
                         Icons.my_location_rounded,
                         color: Colors.black,
