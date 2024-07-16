@@ -41,6 +41,7 @@ class _MyAppState extends State<MyApp> {
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: _index,
               items: [],
+              onTap: (int newIndex) {},
             ),
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
