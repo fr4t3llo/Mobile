@@ -1,8 +1,8 @@
 import 'package:device_preview_plus/device_preview_plus.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import "package:iconsax/iconsax.dart";
-import 'package:weather_proj/searchpage.dart';
+import 'package:flutter/services.dart';
+import 'package:iconsax/iconsax.dart';
 // Ensure you have the correct package for icons
 
 void main() {
@@ -22,6 +22,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  int _index = 0;
+
+  List<Widget> content = const [
+    Icon(Iconsax.timer),
+    Icon(Iconsax.timer4),
+    Icon(Iconsax.timer5),
+  ];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,14 +37,24 @@ class _MyAppState extends State<MyApp> {
             DevicePreview.appBuilder, // Ensure DevicePreview is used properly
         home: SafeArea(
           child: Scaffold(
+            body: Center(child: content[_index]),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _index,
+              items: [],
+            ),
             appBar: AppBar(
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
-              title: const Padding(
-                padding: EdgeInsets.only(top: 6, bottom: 6),
+              title: Padding(
+                padding: const EdgeInsets.only(top: 6, bottom: 6),
                 child: TextField(
-                  decoration: InputDecoration(
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
+                  ],
+                  style: const TextStyle(
+                      fontFamily: 'my', fontWeight: FontWeight.bold),
+                  decoration: const InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Search : Khouribga',
+                      hintText: 'Search : Khouribga!',
                       hintStyle: TextStyle(
                           fontFamily: 'my', fontWeight: FontWeight.w100)),
                 ),
