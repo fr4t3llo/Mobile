@@ -46,21 +46,35 @@ class _MyAppState extends State<MyApp> {
           builder: (context, value, child) => Scaffold(
             body: Center(child: content[_index]),
             bottomNavigationBar: BottomNavigationBar(
+              backgroundColor: const Color.fromARGB(255, 0, 211, 158),
+              selectedFontSize: 15,
+              unselectedFontSize: 12,
               currentIndex: _index,
               items: const [
                 BottomNavigationBarItem(
                   label: 'Currently',
-                  icon: Icon(Iconsax.calendar_edit),
+                  icon: Icon(
+                    Iconsax.calendar_edit,
+                    color: Colors.black,
+                  ),
                 ),
                 BottomNavigationBarItem(
                   label: 'Today',
-                  icon: Icon(Iconsax.calendar),
+                  icon: Icon(
+                    Iconsax.calendar,
+                    color: Colors.black,
+                  ),
                 ),
                 BottomNavigationBarItem(
                   label: 'Weekly',
-                  icon: Icon(Iconsax.calendar_circle),
+                  icon: Icon(
+                    Iconsax.calendar_circle,
+                    color: Colors.black,
+                  ),
                 ),
               ],
+              unselectedItemColor: Colors.black,
+              // selectedItemColor: Colors.white,
               onTap: (int newIndex) {
                 setState(() {
                   _index = newIndex;
