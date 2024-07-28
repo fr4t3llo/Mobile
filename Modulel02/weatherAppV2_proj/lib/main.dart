@@ -10,6 +10,7 @@ import 'package:weatherappv2_proj/currently.dart';
 import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:weatherappv2_proj/weekly.dart';
+import 'package:geolocator/geolocator.dart';
 // Ensure you have the correct package for icons
 
 void main() {
@@ -32,6 +33,52 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String _locationMessage = "Press the button to get location";
+  Future<void> _getCurrentLocation() async {
+    try {
+      // Check for permissions
+      bool isLocationServiceEnabled =
+          await Geolocator.isLocationServiceEnabled();
+      if (!isLocationServiceEnabled) {
+        setState(() {
+          _locationMessage = "Location services are disabled.";
+        });
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            _locationMessage = "Location permissions are denied.";
+          });
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          _locationMessage = "Location permissions are permanently denied.";
+        });
+        return;
+      }
+
+      // Get the current position
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      setState(() {
+        _locationMessage =
+            "Lat: ${position.latitude}, Long: ${position.longitude}";
+      });
+    } catch (e) {
+      setState(() {
+        _locationMessage = "Failed to get location: $e";
+      });
+    }
+  }
+
   int _index = 0;
   String location = '';
   TextEditingController text1 = TextEditingController();
@@ -44,7 +91,7 @@ class _MyAppState extends State<MyApp> {
             DevicePreview.appBuilder, // Ensure DevicePreview is used properly
         home: Consumer<MainProvider>(
           builder: (context, value, child) => Scaffold(
-            body: Center(child: content[_index]),
+            body: Center(child: Text(_locationMessage)),
             bottomNavigationBar: BottomNavigationBar(
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
               selectedFontSize: 15,
@@ -74,7 +121,6 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
               unselectedItemColor: Colors.black,
-              // selectedItemColor: Colors.white,
               onTap: (int newIndex) {
                 setState(() {
                   _index = newIndex;
@@ -104,17 +150,18 @@ class _MyAppState extends State<MyApp> {
                   padding: const EdgeInsets.all(4.0),
                   child: IconButton(
                       onPressed: () {
-                        setState(() {
-                          String newValue = text1.text;
-                          value.setCity(text1.text);
-                          debugPrint(newValue);
-                        });
+                        _getCurrentLocation();
+                        // setState(() {
+                        //   String newValue = text1.text;
+                        //   value.setCity(text1.text);
+                        //   debugPrint(newValue);
+                        // });
                       },
                       icon: const Icon(
                         Icons.my_location_rounded,
                         color: Colors.black,
                       )),
-                )
+                ),
               ],
             ),
           ),
