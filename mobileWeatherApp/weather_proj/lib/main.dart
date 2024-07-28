@@ -1,12 +1,14 @@
+// ignore: depend_on_referenced_packages
 import 'package:device_preview_plus/device_preview_plus.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+// ignore: depend_on_referenced_packages
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-import 'package:weather_proj/cureently.dart';
+import 'package:weather_proj/currently.dart';
 import 'package:weather_proj/today.dart';
-import 'package:weather_proj/viewmodels.dart/main_provider.dart';
+import 'package:weather_proj/viewmodels/main_provider.dart';
 import 'package:weather_proj/weekly.dart';
 // Ensure you have the correct package for icons
 
@@ -34,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   String location = '';
   TextEditingController text1 = TextEditingController();
   List<Widget> content = const [
-    CureentlyPage(),
+    CurrentlyPage(),
     TodayPage(),
     WeeklyPage()
     // Text(

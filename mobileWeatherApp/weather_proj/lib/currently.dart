@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weather_proj/viewmodels.dart/main_provider.dart';
+import 'package:weather_proj/viewmodels/main_provider.dart';
 
-class CureentlyPage extends StatefulWidget {
-  const CureentlyPage({super.key});
+class CurrentlyPage extends StatefulWidget {
+  const CurrentlyPage({super.key});
 
   @override
-  State<CureentlyPage> createState() => _CureentlyPageState();
+  State<CurrentlyPage> createState() => _CurrentlyPageState();
 }
 
-class _CureentlyPageState extends State<CureentlyPage> {
+class _CurrentlyPageState extends State<CurrentlyPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MainProvider>(builder: (context, value, child) {

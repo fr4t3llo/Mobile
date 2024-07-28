@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+// ignore: depend_on_referenced_packages
 import 'package:iconsax/iconsax.dart';
 
 class SearchPage extends StatefulWidget {
@@ -10,8 +11,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  int _index = 0;
-
   List<Widget> body = const [
     Icon(Iconsax.timer),
     Icon(Iconsax.timer4),

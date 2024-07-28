@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weather_proj/viewmodels.dart/main_provider.dart';
+import 'package:weather_proj/viewmodels/main_provider.dart';
 
 class TodayPage extends StatefulWidget {
   const TodayPage({super.key});
@@ -16,7 +16,7 @@ class _TodayPageState extends State<TodayPage> {
       return Text(
         textAlign: TextAlign.center,
         " Today\n${value.city}",
-        style: TextStyle(
+        style: const TextStyle(
             fontFamily: 'my', fontWeight: FontWeight.bold, fontSize: 26),
       );
     });
