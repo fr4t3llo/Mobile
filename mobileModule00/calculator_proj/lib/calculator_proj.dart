@@ -1,5 +1,5 @@
-import 'package:calculator_proj/buttons.dart';
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class FtCalculator extends StatefulWidget {
   const FtCalculator({super.key});
@@ -9,12 +9,8 @@ class FtCalculator extends StatefulWidget {
 }
 
 class _FtCalculatorState extends State<FtCalculator> {
-  String n1 = "";
-  String operation = "";
-  String n2 = "";
-
-  String expressionField = ""; 
-  String resultField = ""; 
+  String expression = "";
+  String result = "";
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +35,7 @@ class _FtCalculatorState extends State<FtCalculator> {
                     alignment: Alignment.bottomRight,
                     padding: const EdgeInsets.all(12),
                     child: Text(
-                      expressionField.isEmpty ? "0" : expressionField,
+                      expression.isEmpty ? "0" : expression,
                       style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'my',
@@ -55,7 +51,7 @@ class _FtCalculatorState extends State<FtCalculator> {
                   alignment: Alignment.bottomRight,
                   padding: const EdgeInsets.all(12),
                   child: Text(
-                    resultField.isEmpty ? "0" : resultField,
+                    result.isEmpty ? "0" : result,
                     style: const TextStyle(
                         color: Colors.white,
                         fontFamily: 'my',
@@ -65,9 +61,9 @@ class _FtCalculatorState extends State<FtCalculator> {
                 ),
               ),
               Wrap(
-                children: Buttons.buttonValues
+                children: _buttons
                     .map((value) => SizedBox(
-                          width: value == Buttons.number_0
+                          width: value == '0'
                               ? screenSize.width / 2
                               : (screenSize.width / 4),
                           height: screenSize.width / 5,
@@ -82,137 +78,63 @@ class _FtCalculatorState extends State<FtCalculator> {
     );
   }
 
-  void assignValue(String value) {
-    if (value != Buttons.dot && int.tryParse(value) == null) {
-      if (operation.isNotEmpty && n2.isNotEmpty) {
-        // calculate();
-      }
-      operation = value;
-    } else if (n1.isEmpty || operation.isEmpty) {
-      if (value == Buttons.dot && n1.contains(Buttons.dot)) return;
-      if (value == Buttons.dot && (n1.isEmpty || n1 == Buttons.dot)) {
-        value = "0.";
-      }
-      n1 += value;
-    } else if (n2.isEmpty || operation.isNotEmpty) {
-      if (value == Buttons.dot && n2.contains(Buttons.dot)) return;
-      if (value == Buttons.dot && (n2.isEmpty || n2 == Buttons.number_0)) {
-        //check before push
-        value = "0.";
-      }
-      n2 += value;
-    }
-    if (value == Buttons.delete) {
-      makeDelete(value);
-    }
-    updateFirstField();
-    setState(() {});
-  }
-
-  void updateFirstField() {
-    expressionField = "$n1$operation$n2";
-    if (expressionField.isEmpty) {
-      expressionField = "0";
-    }
-  }
-
   void clickButton(String value) {
-    if ((value == Buttons.add ||
-            value == Buttons.subtract ||
-            value == Buttons.divide ||
-            value == Buttons.multiply) &&
-        (n1.isEmpty)) {
-      return;
+    if (value == 'AC') {
+      clear();
+    } else if (value == 'C') {
+      backspace();
+    } else if (value == '=') {
+      evaluate();
+    } else {
+      updateExpression(value);
     }
-    if (value == Buttons.calculate) {
-      calculate();
-      return;
-    }
-    if (value == Buttons.delete) {
-      makeDelete(value);
-      return;
-    }
-    if (value == Buttons.clear) {
-      clear(value);
-      return;
-    }
-    assignValue(value);
   }
 
-  void calculate() {
-    if (n1.isEmpty) return;
-    if (n2.isEmpty) return;
-    if (operation.isEmpty) return;
-
-    final double number_1 = double.parse(n1);
-    final double number_2 = double.parse(n2);
-
-    var result = 0.0;
-
-    switch (operation) {
-      case Buttons.add:
-        result = number_1 + number_2;
-        break;
-      case Buttons.multiply:
-        result = number_1 * number_2;
-        break;
-      case Buttons.subtract:
-        result = number_1 - number_2;
-        break;
-      case Buttons.divide:
-        result = number_1 / number_2;
-        break;
-      default:
-    }
+  void updateExpression(String value) {
     setState(() {
-      resultField = result.toString();
-      if (resultField.endsWith(".0")) {
-        resultField = resultField.substring(0, resultField.length - 2);
+      expression += value;
+    });
+  }
+
+  void backspace() {
+    setState(() {
+      if (expression.isNotEmpty) {
+        expression = expression.substring(0, expression.length - 1);
       }
-      n2 = "";
-      n1 = "";
-      operation = "";
-      updateFirstField();
     });
   }
 
-  void clear(value) {
+  void clear() {
     setState(() {
-      n1 = "";
-      operation = "";
-      n2 = "";
-      expressionField = "";
-      resultField = "";
+      expression = "";
+      result = "";
     });
   }
 
-  void makeDelete(value) {
-    if (n2.isNotEmpty) {
-      n2 = n2.substring(0, n2.length - 1);
-    } else if (operation.isNotEmpty) {
-      operation = "";
-    } else if (n1.isNotEmpty) {
-      n1 = n1.substring(0, n1.length - 1);
+  void evaluate() {
+    try {
+      Parser parser = Parser();
+      Expression exp = parser.parse(expression);
+      ContextModel contextModel = ContextModel();
+      double resultValue = exp.evaluate(EvaluationType.REAL, contextModel);
+      setState(() {
+        result = resultValue.toString();
+        if (result.endsWith('.0')) {
+          result = result.substring(0, result.length - 2);
+        }
+      });
+    } catch (e) {
+      setState(() {
+        result = "Error";
+      });
     }
-    updateFirstField();
-    setState(() {});
   }
 
-  Widget createBtn(value) {
+  Widget createBtn(String value) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Material(
-        color: [Buttons.delete, Buttons.clear].contains(value)
-            ? Colors.red
-            : [
-                Buttons.add,
-                Buttons.divide,
-                Buttons.multiply,
-                Buttons.subtract,
-                Buttons.calculate
-              ].contains(value)
-                ? Colors.orange
-                : const Color.fromARGB(255, 106, 106, 106),
+        color: _getButtonColor(value),
         clipBehavior: Clip.hardEdge,
         shape: OutlineInputBorder(
             borderRadius: BorderRadius.circular(100),
@@ -224,7 +146,6 @@ class _FtCalculatorState extends State<FtCalculator> {
               value,
               style: const TextStyle(
                 color: Colors.white,
-                // fontFamily: 'my',
                 fontWeight: FontWeight.bold,
                 fontSize: 33,
               ),
@@ -234,4 +155,35 @@ class _FtCalculatorState extends State<FtCalculator> {
       ),
     );
   }
+
+  Color _getButtonColor(String value) {
+    if (value == 'AC' || value == 'C') {
+      return Colors.red;
+    } else if (['+', '-', '*', '/'].contains(value) || value == '=') {
+      return Colors.orange;
+    } else {
+      return const Color.fromARGB(255, 106, 106, 106);
+    }
+  }
+
+  final List<String> _buttons = [
+    'AC',
+    'C',
+    '/',
+    '*',
+    '7',
+    '8',
+    '9',
+    '-',
+    '4',
+    '5',
+    '6',
+    '+',
+    '1',
+    '2',
+    '3',
+    '=',
+    '0',
+    '.',
+  ];
 }
