@@ -28,16 +28,16 @@ class Page extends StatefulWidget {
 
 class _PageState extends State<Page> {
   String displayText = 'A simple text';
-  bool isTextSwitched = false;
+  bool _switch = false;
 
   void clickme() {
     setState(() {
-      if (isTextSwitched) {
+      if (_switch) {
         displayText = 'A simple text';
       } else {
         displayText = 'Hello World!';
       }
-      isTextSwitched = !isTextSwitched;
+      _switch = !_switch;
     });
   }
 
