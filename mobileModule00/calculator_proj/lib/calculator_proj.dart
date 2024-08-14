@@ -15,67 +15,134 @@ class _FtCalculatorState extends State<FtCalculator> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return MaterialApp(
-      home: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.blue,
-            title: const Text(
-              'Calculator',
-              style: TextStyle(fontFamily: 'my', fontWeight: FontWeight.bold),
+
+    return (screenSize.height > screenSize.width)
+        ? MaterialApp(
+            home: SafeArea(
+              child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.blue,
+                  title: const Text(
+                    'Calculator',
+                    style: TextStyle(
+                        fontFamily: 'my', fontWeight: FontWeight.bold),
+                  ),
+                ),
+                backgroundColor: Colors.black,
+                body: Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        reverse: true,
+                        child: Container(
+                          alignment: Alignment.bottomRight,
+                          padding: const EdgeInsets.all(12),
+                          child: Text(
+                            expression.isEmpty ? "0" : expression,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'my',
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      reverse: true,
+                      child: Container(
+                        alignment: Alignment.bottomRight,
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          result.isEmpty ? "0" : result,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'my',
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      child: Wrap(
+                        children: _buttons
+                            .map((value) => SizedBox(
+                                  width: value == '0'
+                                      ? screenSize.width / 2
+                                      : (screenSize.width / 4),
+                                  height: screenSize.width / 5,
+                                  child: createBtn(value),
+                                ))
+                            .toList(),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
-          ),
-          backgroundColor: Colors.black,
-          body: Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Container(
-                    alignment: Alignment.bottomRight,
-                    padding: const EdgeInsets.all(12),
-                    child: Text(
-                      expression.isEmpty ? "0" : expression,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'my',
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold),
+          )
+        : MaterialApp(
+            home: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.blue,
+                title: const Text(
+                  'Calculator',
+                  style:
+                      TextStyle(fontFamily: 'my', fontWeight: FontWeight.bold),
+                ),
+              ),
+              backgroundColor: Colors.black,
+              body: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      reverse: true,
+                      child: Container(
+                        alignment: Alignment.bottomRight,
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          expression.isEmpty ? "0" : expression,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'my',
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              SingleChildScrollView(
-                reverse: true,
-                child: Container(
-                  alignment: Alignment.bottomRight,
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    result.isEmpty ? "0" : result,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'my',
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold),
+                  SingleChildScrollView(
+                    // reverse: true,
+                    child: Container(
+                      alignment: Alignment.bottomRight,
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        result.isEmpty ? "0" : result,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'my',
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
-                ),
+                  SingleChildScrollView(
+                    child: Wrap(
+                      children: _buttons2
+                          .map((value) => SizedBox(
+                                width: value == '0'
+                                    ? screenSize.height / 5
+                                    : (screenSize.height / 3),
+                                height: screenSize.height / 7,
+                                child: createBtn(value),
+                              ))
+                          .toList(),
+                    ),
+                  )
+                ],
               ),
-              Wrap(
-                children: _buttons
-                    .map((value) => SizedBox(
-                          width: value == '0'
-                              ? screenSize.width / 2
-                              : (screenSize.width / 4),
-                          height: screenSize.width / 5,
-                          child: createBtn(value),
-                        ))
-                    .toList(),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   void clickButton(String value) {
@@ -185,5 +252,25 @@ class _FtCalculatorState extends State<FtCalculator> {
     '=',
     '0',
     '.',
+  ];
+  final List<String> _buttons2 = [
+    '7',
+    '8',
+    '9',
+    'C',
+    'AC',
+    '/',
+    '4',
+    '5',
+    '6',
+    '*',
+    '-',
+    '+',
+    '1',
+    '2',
+    '3',
+    '0',
+    '.',
+    '=',
   ];
 }
