@@ -18,14 +18,17 @@ class _FtCalculatorState extends State<FtCalculator> {
 
     return (screenSize.height > screenSize.width)
         ? MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: SafeArea(
               child: Scaffold(
                 appBar: AppBar(
                   backgroundColor: Colors.blue,
-                  title: const Text(
-                    'Calculator',
-                    style: TextStyle(
-                        fontFamily: 'my', fontWeight: FontWeight.bold),
+                  title: const Center(
+                    child: Text(
+                      'Calculator',
+                      style: TextStyle(
+                          fontFamily: 'my', fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
                 backgroundColor: Colors.black,
@@ -82,13 +85,16 @@ class _FtCalculatorState extends State<FtCalculator> {
             ),
           )
         : MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.blue,
-                title: const Text(
-                  'Calculator',
-                  style:
-                      TextStyle(fontFamily: 'my', fontWeight: FontWeight.bold),
+                title: const Center(
+                  child: Text(
+                    'Calculator',
+                    style: TextStyle(
+                        fontFamily: 'my', fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
               backgroundColor: Colors.black,
@@ -130,7 +136,7 @@ class _FtCalculatorState extends State<FtCalculator> {
                     children: _buttons2
                         .map((value) => SizedBox(
                               width: value == '0'
-                                  ? screenSize.width / 5
+                                  ? screenSize.width / 6
                                   : (screenSize.width / 6),
                               height: screenSize.height / 7,
                               child: createBtn(value),
