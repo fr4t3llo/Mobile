@@ -126,18 +126,16 @@ class _FtCalculatorState extends State<FtCalculator> {
                       ),
                     ),
                   ),
-                  SingleChildScrollView(
-                    child: Wrap(
-                      children: _buttons2
-                          .map((value) => SizedBox(
-                                width: value == '0'
-                                    ? screenSize.height / 5
-                                    : (screenSize.height / 3),
-                                height: screenSize.height / 7,
-                                child: createBtn(value),
-                              ))
-                          .toList(),
-                    ),
+                  Wrap(
+                    children: _buttons2
+                        .map((value) => SizedBox(
+                              width: value == '0'
+                                  ? screenSize.width / 5
+                                  : (screenSize.width / 6),
+                              height: screenSize.height / 7,
+                              child: createBtn(value),
+                            ))
+                        .toList(),
                   )
                 ],
               ),
