@@ -14,13 +14,9 @@ import 'package:weather_proj/weekly.dart';
 
 void main() {
   runApp(
-    DevicePreview(
-        enabled: true, // Enable DevicePreview if necessary
-        builder: (context) => MultiProvider(providers: [
-              ChangeNotifierProvider(create: (_) => MainProvider()),
-            ], child: const MyApp())
-        // Wrap your app
-        ),
+    MultiProvider(providers: [
+          ChangeNotifierProvider(create: (_) => MainProvider()),
+        ], child: const MyApp()),
   );
 }
 
@@ -113,6 +109,9 @@ class _MyAppState extends State<MyApp> {
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
                     ],
+                    onChanged: (vale) {
+                             value.setCity(vale);
+                    },
                     style: const TextStyle(
                         fontFamily: 'my', fontWeight: FontWeight.bold),
                     decoration: const InputDecoration(
@@ -128,8 +127,9 @@ class _MyAppState extends State<MyApp> {
                     child: IconButton(
                         onPressed: () {
                           setState(() {
-                            String newValue = text1.text;
-                            value.setCity(text1.text);
+                            String newValue = value.city;
+                            value.setCity('');
+                            value.setCity('Geolocation');
                             debugPrint(newValue);
                             // content[_index] = Text(
                             //   newValue.isEmpty
