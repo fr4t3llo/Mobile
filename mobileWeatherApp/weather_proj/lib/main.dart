@@ -36,6 +36,7 @@ class _MyAppState extends State<MyApp> {
     CurrentlyPage(),
     TodayPage(),
     WeeklyPage()
+
     // Text(
     //   'Currently',
     //   style: TextStyle(
