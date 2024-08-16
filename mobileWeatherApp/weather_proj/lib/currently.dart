@@ -13,13 +13,15 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MainProvider>(builder: (context, value, child) {
-      return Text(
-        textAlign: TextAlign.center,
-        "Currently \n${value.city}",
-        style: const TextStyle(
-          fontFamily: 'my',
-          fontWeight: FontWeight.bold,
-          fontSize: 26,
+      return Center(
+        child: Text(
+          textAlign: TextAlign.center,
+          "Currently \n${value.city}",
+          style: const TextStyle(
+            fontFamily: 'my',
+            fontWeight: FontWeight.bold,
+            fontSize: 26,
+          ),
         ),
       );
     });

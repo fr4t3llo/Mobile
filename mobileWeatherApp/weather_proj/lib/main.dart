@@ -15,8 +15,8 @@ import 'package:weather_proj/weekly.dart';
 void main() {
   runApp(
     MultiProvider(providers: [
-          ChangeNotifierProvider(create: (_) => MainProvider()),
-        ], child: const MyApp()),
+      ChangeNotifierProvider(create: (_) => MainProvider()),
+    ], child: const MyApp()),
   );
 }
 
@@ -30,6 +30,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _index = 0;
   String location = '';
+  final PageController _pageController = PageController(initialPage: 0);
   TextEditingController text1 = TextEditingController();
   List<Widget> content = const [
     CurrentlyPage(),
@@ -77,7 +78,20 @@ class _MyAppState extends State<MyApp> {
         home: SafeArea(
           child: Consumer<MainProvider>(
             builder: (context, value, child) => Scaffold(
-              body: Center(child: content[_index]),
+              // body: Center(child: content[_index]),
+              body: Center(
+                child: PageView(
+                  scrollDirection: Axis.horizontal,
+                  controller: _pageController,
+                  children: content,
+                  onPageChanged: (value) {
+                    setState(() {
+                      _index = value;
+                    });
+                  },
+                ),
+              ),
+
               bottomNavigationBar: BottomNavigationBar(
                 currentIndex: _index,
                 items: const [
@@ -97,6 +111,7 @@ class _MyAppState extends State<MyApp> {
                 onTap: (int newIndex) {
                   setState(() {
                     _index = newIndex;
+                    _pageController.jumpToPage(_index);
                   });
                 },
               ),
@@ -110,7 +125,7 @@ class _MyAppState extends State<MyApp> {
                       FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
                     ],
                     onChanged: (vale) {
-                             value.setCity(vale);
+                      value.setCity(vale);
                     },
                     style: const TextStyle(
                         fontFamily: 'my', fontWeight: FontWeight.bold),
