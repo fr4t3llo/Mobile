@@ -16,6 +16,7 @@ class _SearchPageState extends State<SearchPage> {
     Icon(Iconsax.timer4),
     Icon(Iconsax.timer5),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Container();

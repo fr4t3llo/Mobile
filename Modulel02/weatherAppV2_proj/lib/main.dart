@@ -82,16 +82,25 @@ class _MyAppState extends State<MyApp> {
   int _index = 0;
   String location = '';
   TextEditingController text1 = TextEditingController();
+  final PageController _pageController = PageController(initialPage: 0);
+
   List<Widget> content = const [CurrentlyPage(), TodayPage(), WeeklyPage()];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        builder:
-            DevicePreview.appBuilder, // Ensure DevicePreview is used properly
         home: Consumer<MainProvider>(
           builder: (context, value, child) => Scaffold(
-            body: Center(child: Text(_locationMessage)),
+            body: PageView(
+              scrollDirection: Axis.horizontal,
+              controller: _pageController,
+              children: content,
+              onPageChanged: (value) {
+                setState(() {
+                  _index = value;
+                });
+              },
+            ),
             bottomNavigationBar: BottomNavigationBar(
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
               selectedFontSize: 15,
@@ -124,6 +133,7 @@ class _MyAppState extends State<MyApp> {
               onTap: (int newIndex) {
                 setState(() {
                   _index = newIndex;
+                  _pageController.jumpToPage(_index);
                 });
               },
             ),
@@ -136,6 +146,9 @@ class _MyAppState extends State<MyApp> {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
                   ],
+                  onChanged: (vale) {
+                    value.setCity(vale);
+                  },
                   style: const TextStyle(
                       fontFamily: 'my', fontWeight: FontWeight.bold),
                   decoration: const InputDecoration(
@@ -151,11 +164,6 @@ class _MyAppState extends State<MyApp> {
                   child: IconButton(
                       onPressed: () {
                         _getCurrentLocation();
-                        // setState(() {
-                        //   String newValue = text1.text;
-                        //   value.setCity(text1.text);
-                        //   debugPrint(newValue);
-                        // });
                       },
                       icon: const Icon(
                         Icons.my_location_rounded,
