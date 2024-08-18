@@ -34,6 +34,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _locationMessage = "Press the button to get location";
+
+  //* to get the location for the device *//
   Future<void> _getCurrentLocation() async {
     try {
       // Check for permissions
@@ -162,8 +164,9 @@ class _MyAppState extends State<MyApp> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: IconButton(
-                      onPressed: () {
-                        _getCurrentLocation();
+                      onPressed: () async {
+                        await _getCurrentLocation();
+                        value.setLosction(_locationMessage);
                       },
                       icon: const Icon(
                         Icons.my_location_rounded,

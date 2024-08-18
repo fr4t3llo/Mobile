@@ -74,12 +74,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        builder:
-            DevicePreview.appBuilder, // Ensure DevicePreview is used properly
         home: SafeArea(
           child: Consumer<MainProvider>(
             builder: (context, value, child) => Scaffold(
-              // body: Center(child: content[_index]),
               body: Center(
                 child: PageView(
                   scrollDirection: Axis.horizontal,
@@ -92,7 +89,6 @@ class _MyAppState extends State<MyApp> {
                   },
                 ),
               ),
-
               bottomNavigationBar: BottomNavigationBar(
                 currentIndex: _index,
                 items: const [
@@ -147,16 +143,6 @@ class _MyAppState extends State<MyApp> {
                             value.setCity('');
                             value.setCity('Geolocation');
                             debugPrint(newValue);
-                            // content[_index] = Text(
-                            //   newValue.isEmpty
-                            //       ? 'No Location Provided'
-                            //       : newValue,
-                            //   style: const TextStyle(
-                            //     fontFamily: 'my',
-                            //     fontWeight: FontWeight.bold,
-                            //     fontSize: 25,
-                            //   ),
-                            // );
                           });
                         },
                         icon: const Icon(
