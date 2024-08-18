@@ -73,7 +73,6 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         _locationMessage =
             "Lat: ${position.latitude}, Long: ${position.longitude}";
-        
       });
     } catch (e) {
       setState(() {
@@ -166,6 +165,7 @@ class _MyAppState extends State<MyApp> {
                   padding: const EdgeInsets.all(4.0),
                   child: IconButton(
                       onPressed: () async {
+                        // showSearch(context: context, delegate: );
                         await _getCurrentLocation();
                         value.setLosction(_locationMessage);
                       },
