@@ -5,6 +5,9 @@
 *.swp
 .DS_Store
 .atom/
+.env
+api.rest
+../../.vscode
 .buildlog/
 .history
 .vscode

@@ -73,6 +73,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         _locationMessage =
             "Lat: ${position.latitude}, Long: ${position.longitude}";
+        
       });
     } catch (e) {
       setState(() {
