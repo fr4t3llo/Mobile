@@ -1,6 +1,0 @@
-{
-    "editor.fontFamily": "'Cascadia Code Nf'",
-    // "editor.fontLigatures": true
-    // "editor.fontLigatures": "'calt', 'ss01'",
-    "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss19', 'ss20'"
-}

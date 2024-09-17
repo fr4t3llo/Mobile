@@ -10,6 +10,7 @@ import 'package:weatherappv2_proj/currently.dart';
 import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:weatherappv2_proj/weekly.dart';
+// ignore: depend_on_referenced_packages
 import 'package:geolocator/geolocator.dart';
 // Ensure you have the correct package for icons
 
@@ -34,7 +35,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _locationMessage = "Press the button to get location";
-
   //* to get the location for the device *//
   Future<void> _getCurrentLocation() async {
     try {
@@ -73,6 +73,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         _locationMessage =
             "Lat: ${position.latitude}, Long: ${position.longitude}";
+        debugPrint("${position.latitude} ${position.longitude}");
       });
     } catch (e) {
       setState(() {
