@@ -1,4 +1,6 @@
 // ignore: depend_on_referenced_packages
+import 'dart:io';
+
 import 'package:device_preview_plus/device_preview_plus.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +13,16 @@ import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:weatherappv2_proj/weekly.dart';
 // ignore: depend_on_referenced_packages
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+// ignore: depend_on_referenced_packages
 import 'package:geolocator/geolocator.dart';
 // Ensure you have the correct package for icons
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //init supabase
+  await dotenv.load(fileName: ".env");
   runApp(
     DevicePreview(
         enabled: true, // Enable DevicePreview if necessary
@@ -36,6 +44,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _locationMessage = "Press the button to get location";
   //* to get the location for the device *//
+  Future<void> _getCities(String city) async {
+    String? apiUrl = dotenv.env['API_CITIES'] ;
+    http.Response response = await http.get(Uri.parse('$apiUrl$city&format=jsonv2'));
+    if (response.statusCode == 200) {
+      print(response.body);
+    } else {
+      return;
+    }
+  }
+
   Future<void> _getCurrentLocation() async {
     try {
       // Check for permissions
@@ -169,6 +187,7 @@ class _MyAppState extends State<MyApp> {
                         // showSearch(context: context, delegate: );
                         await _getCurrentLocation();
                         value.setLosction(_locationMessage);
+                        await _getCities('khouribga');
                       },
                       icon: const Icon(
                         Icons.my_location_rounded,
