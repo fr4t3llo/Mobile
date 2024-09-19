@@ -21,27 +21,6 @@
         ]
     },
     {
-        "place_id": 287421018,
-        "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
-        "osm_type": "relation",
-        "osm_id": 5144319,
-        "lat": "32.8334299",
-        "lon": "-6.90647883291205",
-        "category": "boundary",
-        "type": "administrative",
-        "place_rank": 12,
-        "importance": 0.45000999999999997,
-        "addresstype": "county",
-        "name": "cercle de Khouribga دائرة خريبكة",
-        "display_name": "cercle de Khouribga دائرة خريبكة, Khouribga Province, Béni Mellal-Khénifra, Morocco",
-        "boundingbox": [
-            "32.6186700",
-            "33.0487092",
-            "-7.0559243",
-            "-6.6251846"
-        ]
-    },
-    {
         "place_id": 287917112,
         "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
         "osm_type": "relation",
@@ -63,11 +42,32 @@
         ]
     },
     {
+        "place_id": 287421018,
+        "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+        "osm_type": "relation",
+        "osm_id": 5144319,
+        "lat": "32.8334299",
+        "lon": "-6.90647883291205",
+        "category": "boundary",
+        "type": "administrative",
+        "place_rank": 12,
+        "importance": 0.45000999999999997,
+        "addresstype": "county",
+        "name": "cercle de Khouribga دائرة خريبكة",
+        "display_name": "cercle de Khouribga دائرة خريبكة, Khouribga Province, Béni Mellal-Khénifra, Morocco",
+        "boundingbox": [
+            "32.6186700",
+            "33.0487092",
+            "-7.0559243",
+            "-6.6251846"
+        ]
+    },
+    {
         "place_id": 287990507,
         "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
         "osm_type": "relation",
         "osm_id": 1709087,
-        "lat": "32.9264311",
+        "lat": "32.9264311",  
         "lon": "-6.5876776175616945",
         "category": "boundary",
         "type": "administrative",
