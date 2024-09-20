@@ -233,6 +233,30 @@ class _MyAppState extends State<MyApp> {
 class DataSearch extends SearchDelegate<String> {
   List<dynamic> list;
   DataSearch({required this.list});
+
+  Future<http.Response> getDataApi(String query) async {
+    String? url = dotenv.env['API_CITIES'];
+    var data = {"city": query};
+
+    try {
+      final response = await http.post(
+        Uri.parse(url!),
+        body: data,
+      );
+
+      // Check for a successful response
+      if (response.statusCode == 200) {
+        var responseBody = jsonDecode(response.body);
+        return response; // Or return responseBody if needed
+      } else {
+        throw Exception('Failed to load data: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle any errors
+      throw Exception('Error fetching data: $e');
+    }
+  }
+
   @override
   List<Widget>? buildActions(BuildContext context) {
     // action for appbar
@@ -260,22 +284,35 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     // resault search
-    throw UnimplementedError();
+    return FutureBuilder(
+      future: getDataApi(query),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+              itemCount: snapshot.data.lenght,
+              itemBuilder: (context, i) {
+                return Text('data');
+              });
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+    // throw UnimplementedError();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     // show when someone search for something
-    var search_list =
+    var searchList =
         query.isEmpty ? list : list.where((p) => p.startsWith(query)).toList();
     return ListView.builder(
-        itemCount: search_list.length,
+        itemCount: searchList.length,
         itemBuilder: (context, i) {
           return ListTile(
             leading: const Icon(Iconsax.location),
-            title: Text(search_list[i]),
+            title: Text(searchList[i]),
             onTap: () {
-              query = search_list[i];
+              query = list[i];
               showResults(context);
             },
           );
