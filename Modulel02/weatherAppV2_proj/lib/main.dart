@@ -1,6 +1,7 @@
 // ignore: depend_on_referenced_packages
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:device_preview_plus/device_preview_plus.dart';
 // import 'package:flutter/cupertino.dart';
@@ -43,13 +44,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  Timer? _debounce;
+  String query = '';
   String _locationMessage = "Press the button to get location";
   //* to get the location for the device *//
 
   @override
   void initState() {
     super.initState();
-    _getCities();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -98,30 +100,39 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  List<dynamic> listSearch = [];
-  Future<void> _getCities() async {
-    String city = 'new york';
-    String? apiUrl = dotenv.env['API_CITIES'];
+  void _onSearchChanged(String value) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        query = value;
+      });
+      if (query.isNotEmpty) {
+        _getCities(query); // Call API with the current query
+      } else {
+        setState(() {
+          listSearch.clear(); // Clear suggestions when the input is empty
+        });
+      }
+    });
+  }
 
-    // Ensure apiUrl is not null
+  List<dynamic> listSearch = [];
+
+  Future<void> _getCities(String city) async {
+    String? apiUrl = dotenv.env['API_CITIES'];
     if (apiUrl == null) {
       print('API URL is not set');
       return;
     }
 
-    // Perform the HTTP GET request
     http.Response response =
         await http.get(Uri.parse('$apiUrl$city&format=jsonv2'));
 
-    // Check if the response is successful
     if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
-
-      for (int i = 0; i < responseBody.length; i++) {
-        listSearch.add(responseBody[i]['display_name']);
-      }
-
-      print(listSearch);
+      setState(() {
+        listSearch = responseBody.map((item) => item['display_name']).toList();
+      });
     } else {
       print('Error: ${response.statusCode}');
     }
@@ -193,7 +204,6 @@ class _MyAppState extends State<MyApp> {
                 autofocus: false,
                 readOnly: true,
                 onTap: () {
-                  _getCities();
                   showSearch(
                       context: context, delegate: DataSearch(list: listSearch));
                 },
@@ -234,26 +244,17 @@ class DataSearch extends SearchDelegate<String> {
   List<dynamic> list;
   DataSearch({required this.list});
 
-  Future<http.Response> getDataApi(String query) async {
-    String? url = dotenv.env['API_CITIES'];
-    var data = {"city": query};
+  Future<List<dynamic>> getDataApi(String query) async {
+    String? apiUrl = dotenv.env['API_CITIES'];
+    // Ensure the query is properly formatted
+    http.Response response =
+        await http.get(Uri.parse('$apiUrl$query&format=jsonv2'));
 
-    try {
-      final response = await http.post(
-        Uri.parse(url!),
-        body: data,
-      );
-
-      // Check for a successful response
-      if (response.statusCode == 200) {
-        var responseBody = jsonDecode(response.body);
-        return response; // Or return responseBody if needed
-      } else {
-        throw Exception('Failed to load data: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Handle any errors
-      throw Exception('Error fetching data: $e');
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      return responseBody; // Return the list of results
+    } else {
+      throw Exception('Failed to load data: ${response.statusCode}');
     }
   }
 
@@ -283,22 +284,62 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    // resault search
     return FutureBuilder(
-      future: getDataApi(query),
+      future: getDataApi(query), // Fetch data based on query
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data.isEmpty) {
+          return const Center(child: Text('No results found.'));
+        } else {
+          var results = snapshot.data; // Assuming you return a list of results
           return ListView.builder(
-              itemCount: snapshot.data.lenght,
-              itemBuilder: (context, i) {
-                return Text('data');
-              });
+            itemCount: results.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  title: Text(
+                    results[index]['display_name'],
+                    style: const TextStyle(
+                        fontFamily: 'my',
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  onTap: () {
+                    close(
+                        context,
+                        results[index][
+                            'display_name']); // Close search with selected city
+                  },
+                ),
+              );
+            },
+          );
         }
-        return const Center(child: CircularProgressIndicator());
       },
     );
-    // throw UnimplementedError();
   }
+  // @override
+  // Widget buildResults(BuildContext context) {
+  //   // resault search
+  //   return FutureBuilder(
+  //     future: getDataApi(query),
+  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+  //       if (snapshot.hasData) {
+  //         return ListView.builder(
+  //             itemCount: snapshot.data.lenght,
+  //             itemBuilder: (context, i) {
+  //               return Text('data');
+  //             });
+  //       }
+  //       return const Center(child: CircularProgressIndicator());
+  //     },
+  //   );
+  //   // throw UnimplementedError();
+  // }
 
   @override
   Widget buildSuggestions(BuildContext context) {
