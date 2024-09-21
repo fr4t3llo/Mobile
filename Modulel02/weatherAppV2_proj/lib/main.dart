@@ -327,7 +327,7 @@ class DataSearch extends SearchDelegate<String> {
   //   // resault search
   //   return FutureBuilder(
   //     future: getDataApi(query),
-  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+  //     buildekhouribga r: (BuildContext context, AsyncSnapshot snapshot) {
   //       if (snapshot.hasData) {
   //         return ListView.builder(
   //             itemCount: snapshot.data.lenght,
