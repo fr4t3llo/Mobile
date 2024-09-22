@@ -301,11 +301,24 @@ class DataSearch extends SearchDelegate<String> {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ListTile(
+                  autofocus: true,
+                  leading: const Icon(
+                    Iconsax.location4,
+                    color: Colors.black,
+                  ),
+                  tileColor: const Color.fromARGB(255, 127, 228, 241),
                   title: Text(
+                    results[index]['name'],
+                    style: const TextStyle(
+                        fontFamily: 'my',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
                     results[index]['display_name'],
                     style: const TextStyle(
                         fontFamily: 'my',
-                        fontSize: 15,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold),
                   ),
                   onTap: () {
@@ -350,6 +363,7 @@ class DataSearch extends SearchDelegate<String> {
         itemCount: searchList.length,
         itemBuilder: (context, i) {
           return ListTile(
+            tileColor: Colors.cyan,
             leading: const Icon(Iconsax.location),
             title: Text(searchList[i]),
             onTap: () {
