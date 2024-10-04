@@ -29,7 +29,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _index = 0;
   String location = '';
-  final PageController _pageController = PageController(initialPage: 0);
   TextEditingController text1 = TextEditingController();
   List<Widget> content = const [
     CurrentlyPage(),
@@ -73,21 +72,11 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
+      
         home: SafeArea(
           child: Consumer<MainProvider>(
             builder: (context, value, child) => Scaffold(
-              body: Center(
-                child: PageView(
-                  scrollDirection: Axis.horizontal,
-                  controller: _pageController,
-                  children: content,
-                  onPageChanged: (value) {
-                    setState(() {
-                      _index = value;
-                    });
-                  },
-                ),
-              ),
+              body: Center(child: content[_index]),
               bottomNavigationBar: BottomNavigationBar(
                 currentIndex: _index,
                 items: const [
@@ -107,7 +96,6 @@ class _MyAppState extends State<MyApp> {
                 onTap: (int newIndex) {
                   setState(() {
                     _index = newIndex;
-                    _pageController.jumpToPage(_index);
                   });
                 },
               ),
@@ -120,9 +108,6 @@ class _MyAppState extends State<MyApp> {
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
                     ],
-                    onChanged: (vale) {
-                      value.setCity(vale);
-                    },
                     style: const TextStyle(
                         fontFamily: 'my', fontWeight: FontWeight.bold),
                     decoration: const InputDecoration(
@@ -138,10 +123,19 @@ class _MyAppState extends State<MyApp> {
                     child: IconButton(
                         onPressed: () {
                           setState(() {
-                            String newValue = value.city;
-                            value.setCity('');
-                            value.setCity('Geolocation');
+                            String newValue = text1.text;
+                            value.setCity(text1.text);
                             debugPrint(newValue);
+                            // content[_index] = Text(
+                            //   newValue.isEmpty
+                            //       ? 'No Location Provided'
+                            //       : newValue,
+                            //   style: const TextStyle(
+                            //     fontFamily: 'my',
+                            //     fontWeight: FontWeight.bold,
+                            //     fontSize: 25,
+                            //   ),
+                            // );
                           });
                         },
                         icon: const Icon(

@@ -11,12 +11,12 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+
   List<Widget> body = const [
     Icon(Iconsax.timer),
     Icon(Iconsax.timer4),
     Icon(Iconsax.timer5),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Container();

@@ -13,13 +13,11 @@ class _TodayPageState extends State<TodayPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MainProvider>(builder: (context, value, child) {
-      return Center(
-        child: Text(
-          textAlign: TextAlign.center,
-          " Today\n${value.city}",
-          style: const TextStyle(
-              fontFamily: 'my', fontWeight: FontWeight.bold, fontSize: 26),
-        ),
+      return Text(
+        textAlign: TextAlign.center,
+        " Today\n${value.city}",
+        style: const TextStyle(
+            fontFamily: 'my', fontWeight: FontWeight.bold, fontSize: 26),
       );
     });
   }

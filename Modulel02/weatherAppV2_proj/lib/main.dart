@@ -1,6 +1,5 @@
 // ignore: depend_on_referenced_packages
 import 'dart:convert';
-import 'dart:io';
 import 'dart:async';
 
 import 'package:device_preview_plus/device_preview_plus.dart';
@@ -100,21 +99,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void _onSearchChanged(String value) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 300), () {
-      setState(() {
-        query = value;
-      });
-      if (query.isNotEmpty) {
-        _getCities(query); // Call API with the current query
-      } else {
-        setState(() {
-          listSearch.clear(); // Clear suggestions when the input is empty
-        });
-      }
-    });
-  }
 
   List<dynamic> listSearch = [];
 
