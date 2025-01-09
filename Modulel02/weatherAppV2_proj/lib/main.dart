@@ -1,4 +1,7 @@
 // ignore: depend_on_referenced_packages
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:device_preview_plus/device_preview_plus.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +9,7 @@ import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:weatherappv2_proj/currently.dart';
 import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
@@ -16,7 +20,7 @@ import 'package:geolocator/geolocator.dart';
 void main() {
   runApp(
     DevicePreview(
-        enabled: true, // Enable DevicePreview if necessary
+        // enabled: true, // Enable DevicePreview if necessary
         builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(create: (_) => MainProvider()),
             ], child: const MyApp())
@@ -68,15 +72,27 @@ class _MyAppState extends State<MyApp> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
+      
+
       setState(() {
         _locationMessage =
             "Lat: ${position.latitude}, Long: ${position.longitude}";
+          debugPrint(_locationMessage);
+        get_city(position);
       });
     } catch (e) {
       setState(() {
         _locationMessage = "Failed to get location: $e";
       });
     }
+  }
+
+
+  Future get_city(Position p)async{
+    var response =await  http.Client().get(Uri.parse("https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
+    log(jsonDecode(response.body)["address"]["city"]);
+    context.read<MainProvider>().setCity(jsonDecode(response.body)["address"]["city"]);
+    // log(response.body);
   }
 
   int _index = 0;
@@ -141,22 +157,23 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
               title: Padding(
                 padding: const EdgeInsets.only(top: 6, bottom: 6),
-                child: TextField(
-                  controller: text1,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
-                  ],
-                  onChanged: (vale) {
-                    value.setCity(vale);
-                  },
-                  style: const TextStyle(
-                      fontFamily: 'my', fontWeight: FontWeight.bold),
-                  decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Search location... ex:  Khouribga',
-                      hintStyle: TextStyle(
-                          fontFamily: 'my', fontWeight: FontWeight.w100)),
-                ),
+                child: 
+                // child: TextField(
+                //   controller: text1,
+                //   inputFormatters: [
+                //     FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
+                //   ],
+                //   onChanged: (vale) {
+                //     value.setCity(vale);
+                //   },
+                //   style: const TextStyle(
+                //       fontFamily: 'my', fontWeight: FontWeight.bold),
+                //   decoration: const InputDecoration(
+                //       border: InputBorder.none,
+                //       hintText: 'Search location... ex:  Khouribga',
+                //       hintStyle: TextStyle(
+                //           fontFamily: 'my', fontWeight: FontWeight.w100)),
+                // ),
               ),
               actions: [
                 Padding(
