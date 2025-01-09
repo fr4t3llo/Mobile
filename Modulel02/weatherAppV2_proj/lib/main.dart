@@ -14,6 +14,7 @@ import 'package:weatherappv2_proj/currently.dart';
 import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:weatherappv2_proj/weekly.dart';
+// import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:geolocator/geolocator.dart';
 // Ensure you have the correct package for icons
 
@@ -72,12 +73,10 @@ class _MyAppState extends State<MyApp> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      
-
       setState(() {
         _locationMessage =
             "Lat: ${position.latitude}, Long: ${position.longitude}";
-          debugPrint(_locationMessage);
+        debugPrint(_locationMessage);
         get_city(position);
       });
     } catch (e) {
@@ -87,19 +86,26 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-
-  Future get_city(Position p)async{
-    var response =await  http.Client().get(Uri.parse("https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
+  Future get_city(Position p) async {
+    var response = await http.Client().get(Uri.parse(
+        "https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
     log(jsonDecode(response.body)["address"]["city"]);
-    context.read<MainProvider>().setCity(jsonDecode(response.body)["address"]["city"]);
+    context
+        .read<MainProvider>()
+        .setCity(jsonDecode(response.body)["address"]["city"]);
     // log(response.body);
   }
 
   int _index = 0;
   String location = '';
+  final List<String> _cities = [
+  'London', 'New York', 'Tokyo', 'Paris', 'Dubai',
+  'Singapore', 'Barcelona', 'Mumbai', 'Sydney', 'Toronto',
+  'Berlin', 'Bangkok', 'Istanbul', 'Rome', 'Amsterdam'
+];
   TextEditingController text1 = TextEditingController();
   final PageController _pageController = PageController(initialPage: 0);
-
+  final SearchController searchController = SearchController();
   List<Widget> content = const [CurrentlyPage(), TodayPage(), WeeklyPage()];
   @override
   Widget build(BuildContext context) {
@@ -157,23 +163,60 @@ class _MyAppState extends State<MyApp> {
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
               title: Padding(
                 padding: const EdgeInsets.only(top: 6, bottom: 6),
-                child: 
-                // child: TextField(
-                //   controller: text1,
-                //   inputFormatters: [
-                //     FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
-                //   ],
-                //   onChanged: (vale) {
-                //     value.setCity(vale);
-                //   },
-                //   style: const TextStyle(
-                //       fontFamily: 'my', fontWeight: FontWeight.bold),
-                //   decoration: const InputDecoration(
-                //       border: InputBorder.none,
-                //       hintText: 'Search location... ex:  Khouribga',
-                //       hintStyle: TextStyle(
-                //           fontFamily: 'my', fontWeight: FontWeight.w100)),
-                // ),
+                child: SearchAnchor(
+  searchController: searchController,
+  builder: (BuildContext context, SearchController controller) {
+    return SearchBar(
+      controller: controller,
+      padding: const MaterialStatePropertyAll<EdgeInsets>(
+        EdgeInsets.symmetric(horizontal: 16.0)
+      ),
+      onTap: () {
+        controller.openView();
+      },
+      leading: const Icon(Icons.search),
+      hintText: 'Search cities...',
+    );
+  },
+  viewBuilder: (Iterable<Widget> suggestions) {
+    return SearchView(
+      suggestions: suggestions,
+    );
+  },
+  suggestionsBuilder: (BuildContext context, SearchController controller) {
+    if (controller.text.isEmpty) {
+      return _cities.map((city) => ListTile(
+        title: Text(city),
+        onTap: () {
+          controller.closeView(city);
+          context.read<MainProvider>().setCity(city);
+        },
+      )).toList();
+    }
+
+    final keyword = controller.text.toLowerCase();
+    final filtered = _cities
+        .where((city) => city.toLowerCase().contains(keyword))
+        .toList();
+    
+    if (filtered.isEmpty) {
+      return [
+        const ListTile(
+          title: Text('No cities found'),
+          enabled: false,
+        )
+      ];
+    }
+    
+    return filtered.map((filteredCity) => ListTile(
+      title: Text(filteredCity),
+      onTap: () {
+        controller.closeView(filteredCity);
+        context.read<MainProvider>().setCity(filteredCity);
+      },
+    )).toList();
+  },
+)
               ),
               actions: [
                 Padding(
@@ -191,5 +234,17 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ));
+  }
+}
+class SearchView extends StatelessWidget {
+  final Iterable<Widget> suggestions;
+
+  SearchView({required this.suggestions});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: suggestions.toList(),
+    );
   }
 }

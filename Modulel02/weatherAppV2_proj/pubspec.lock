@@ -123,6 +123,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_search_bar:
+    dependency: "direct dev"
+    description:
+      name: flutter_search_bar
+      sha256: "6bc1d82c4caf04f40a9386833d5e2a8d947c89fee5c4c1e735957851677d1012"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
