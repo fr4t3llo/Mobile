@@ -248,3 +248,6 @@ class SearchView extends StatelessWidget {
     );
   }
 }
+  
+
+  
