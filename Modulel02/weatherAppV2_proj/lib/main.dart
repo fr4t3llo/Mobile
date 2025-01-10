@@ -1,6 +1,7 @@
 // ignore: depend_on_referenced_packages
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:async';
 
 import 'package:device_preview_plus/device_preview_plus.dart';
 // import 'package:flutter/cupertino.dart';
@@ -16,11 +17,13 @@ import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:weatherappv2_proj/weekly.dart';
 // import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:weatherappv2_proj/viewmodels/model.dart';
 // Ensure you have the correct package for icons
 
 void main() {
   runApp(
     DevicePreview(
+        enabled: false,
         // enabled: true, // Enable DevicePreview if necessary
         builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(create: (_) => MainProvider()),
@@ -96,13 +99,55 @@ class _MyAppState extends State<MyApp> {
     // log(response.body);
   }
 
+  Future<List<City>> searchCities(String query) async {
+    if (query.isEmpty) return [];
+
+    try {
+      final response = await http.get(Uri.parse(
+          'https://geocoding-api.open-meteo.com/v1/search?name=${Uri.encodeComponent(query)}&count=10&language=en&format=json'));
+        log(response.body);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['results'] != null) {
+          return (data['results'] as List)
+              .map((result) => City(
+                    name: result['name'],
+                    region: result['admin1'] ?? '',
+                    country: result['country'] ?? '',
+                    latitude: result['latitude'].toDouble(),
+                    longitude: result['longitude'].toDouble(),
+                  ))
+              .toList();
+        }
+      }
+      return [];
+    } catch (e) {
+      debugPrint('Error searching cities: $e');
+      return [];
+    }
+  }
+
+  Future<WeatherData> getWeather(double latitude, double longitude) async {
+    try {
+      final response = await http.get(Uri.parse(
+          'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&hourly=temperature_2m'));
+
+      if (response.statusCode == 200) {
+        return WeatherData.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception('Failed to load weather data: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Error fetching weather: $e');
+      throw Exception('Failed to fetch weather data: $e');
+    }
+  }
+
   int _index = 0;
   String location = '';
-  final List<String> _cities = [
-  'London', 'New York', 'Tokyo', 'Paris', 'Dubai',
-  'Singapore', 'Barcelona', 'Mumbai', 'Sydney', 'Toronto',
-  'Berlin', 'Bangkok', 'Istanbul', 'Rome', 'Amsterdam'
-];
+  List<City> _searchResults = [];
+  bool _isLoading = false;
+  Timer? _debounceTimer;
   TextEditingController text1 = TextEditingController();
   final PageController _pageController = PageController(initialPage: 0);
   final SearchController searchController = SearchController();
@@ -113,15 +158,17 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         home: Consumer<MainProvider>(
           builder: (context, value, child) => Scaffold(
-            body: PageView(
-              scrollDirection: Axis.horizontal,
-              controller: _pageController,
-              children: content,
-              onPageChanged: (value) {
-                setState(() {
-                  _index = value;
-                });
-              },
+            body: SafeArea(
+              child: PageView(
+                scrollDirection: Axis.horizontal,
+                controller: _pageController,
+                children: content,
+                onPageChanged: (value) {
+                  setState(() {
+                    _index = value;
+                  });
+                },
+              ),
             ),
             bottomNavigationBar: BottomNavigationBar(
               backgroundColor: const Color.fromARGB(255, 0, 211, 158),
@@ -164,59 +211,117 @@ class _MyAppState extends State<MyApp> {
               title: Padding(
                 padding: const EdgeInsets.only(top: 6, bottom: 6),
                 child: SearchAnchor(
-  searchController: searchController,
-  builder: (BuildContext context, SearchController controller) {
-    return SearchBar(
-      controller: controller,
-      padding: const MaterialStatePropertyAll<EdgeInsets>(
-        EdgeInsets.symmetric(horizontal: 16.0)
-      ),
-      onTap: () {
-        controller.openView();
-      },
-      leading: const Icon(Icons.search),
-      hintText: 'Search cities...',
-    );
-  },
-  viewBuilder: (Iterable<Widget> suggestions) {
-    return SearchView(
-      suggestions: suggestions,
-    );
-  },
-  suggestionsBuilder: (BuildContext context, SearchController controller) {
-    if (controller.text.isEmpty) {
-      return _cities.map((city) => ListTile(
-        title: Text(city),
-        onTap: () {
-          controller.closeView(city);
-          context.read<MainProvider>().setCity(city);
-        },
-      )).toList();
-    }
+                  searchController: searchController,
+                  builder: (BuildContext context, SearchController controller) {
+                    return SearchBar(
+                      controller: controller,
+                      padding: const MaterialStatePropertyAll<EdgeInsets>(
+                          EdgeInsets.symmetric(horizontal: 16.0)),
+                      onTap: () {
+                        controller.openView();
+                      },
+                      onChanged: (value) {
+                        // Cancel previous timer
+                        _debounceTimer?.cancel();
 
-    final keyword = controller.text.toLowerCase();
-    final filtered = _cities
-        .where((city) => city.toLowerCase().contains(keyword))
-        .toList();
-    
-    if (filtered.isEmpty) {
-      return [
-        const ListTile(
-          title: Text('No cities found'),
-          enabled: false,
-        )
-      ];
-    }
-    
-    return filtered.map((filteredCity) => ListTile(
-      title: Text(filteredCity),
-      onTap: () {
-        controller.closeView(filteredCity);
-        context.read<MainProvider>().setCity(filteredCity);
-      },
-    )).toList();
-  },
-)
+                        // Start new timer to update search
+                        _debounceTimer =
+                            Timer(const Duration(milliseconds: 300), () {
+                          controller.openView();
+                        });
+                      },
+                      leading: const Icon(Icons.search),
+                      hintText: 'Search cities...',
+                    );
+                  },
+                  suggestionsBuilder: (BuildContext context,
+                      SearchController controller) async {
+                    if (controller.text.isEmpty) {
+                      return [
+                        const ListTile(
+                          title: Text('Type to search for a city...'),
+                          enabled: false,
+                        )
+                      ];
+                    }
+
+                    if (_isLoading) {
+                      return [
+                        const ListTile(
+                          leading: CircularProgressIndicator(),
+                          title: Text('Searching...'),
+                          enabled: false,
+                        )
+                      ];
+                    }
+
+                    setState(() {
+                      _isLoading = true;
+                    });
+
+                    try {
+                      final results = await searchCities(controller.text);
+
+                      if (results.isEmpty) {
+                        return [
+                          const ListTile(
+                            title: Text('No cities found'),
+                            enabled: false,
+                          )
+                        ];
+                      }
+
+                      return results
+                          .map((city) => ListTile(
+                                title: Text(city.name),
+                                subtitle:
+                                    Text('${city.region}, ${city.country}'),
+                                onTap: () async {
+                                  final cityString =
+                                      '${city.name}, ${city.region}, ${city.country}';
+                                  controller.closeView(cityString);
+
+                                  // Update the city in MainProvider
+                                  context
+                                      .read<MainProvider>()
+                                      .setCity(city.name);
+
+                                  // Show loading indicator
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Fetching weather data...')));
+
+                                  // Fetch weather data
+                                  try {
+                                    final weatherData = await getWeather(
+                                        city.latitude, city.longitude);
+                                    context
+                                        .read<MainProvider>()
+                                        .setWeatherData(weatherData);
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Failed to load weather data: $e')));
+                                  }
+                                },
+                              ))
+                          .toList();
+                    } catch (e) {
+                      return [
+                        ListTile(
+                          title: Text('Error searching cities: $e'),
+                          enabled: false,
+                        )
+                      ];
+                    } finally {
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }
+                  },
+                ),
               ),
               actions: [
                 Padding(
@@ -236,6 +341,7 @@ class _MyAppState extends State<MyApp> {
         ));
   }
 }
+
 class SearchView extends StatelessWidget {
   final Iterable<Widget> suggestions;
 
@@ -248,6 +354,3 @@ class SearchView extends StatelessWidget {
     );
   }
 }
-  
-
-  

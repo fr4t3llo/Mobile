@@ -1,6 +1,6 @@
 plugins {
     id "com.android.application"
-    id 'org.jetbrains.kotlin.android' version '1.7.10'  // Only use this one, remove the other Kotlin plugin
+    id 'org.jetbrains.kotlin.android' version '1.9.10'  // Only use this one, remove the other Kotlin plugin
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -24,7 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.example.weatherappv2_proj"
-    compileSdk = flutter.compileSdkVersion
+    // compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
