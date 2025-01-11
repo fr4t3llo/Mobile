@@ -1,21 +1,25 @@
 // ignore: depend_on_referenced_packages
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:async';
 
+// ignore: depend_on_referenced_packages
 import 'package:device_preview_plus/device_preview_plus.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 // ignore: depend_on_referenced_packages
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:weatherappv2_proj/currently.dart';
 import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:weatherappv2_proj/weekly.dart';
 // import 'package:flutter_search_bar/flutter_search_bar.dart';
+// ignore: depend_on_referenced_packages
 import 'package:geolocator/geolocator.dart';
 import 'package:weatherappv2_proj/viewmodels/model.dart';
 // Ensure you have the correct package for icons
@@ -23,7 +27,7 @@ import 'package:weatherappv2_proj/viewmodels/model.dart';
 void main() {
   runApp(
     DevicePreview(
-        enabled: false,
+        enabled: true,
         // enabled: true, // Enable DevicePreview if necessary
         builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(create: (_) => MainProvider()),
@@ -89,6 +93,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  // ignore: non_constant_identifier_names
   Future get_city(Position p) async {
     var response = await http.Client().get(Uri.parse(
         "https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
@@ -105,7 +110,7 @@ class _MyAppState extends State<MyApp> {
     try {
       final response = await http.get(Uri.parse(
           'https://geocoding-api.open-meteo.com/v1/search?name=${Uri.encodeComponent(query)}&count=10&language=en&format=json'));
-        log(response.body);
+      log(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['results'] != null) {
@@ -145,7 +150,6 @@ class _MyAppState extends State<MyApp> {
 
   int _index = 0;
   String location = '';
-  List<City> _searchResults = [];
   bool _isLoading = false;
   Timer? _debounceTimer;
   TextEditingController text1 = TextEditingController();
@@ -156,10 +160,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Consumer<MainProvider>(
-          builder: (context, value, child) => Scaffold(
-            body: SafeArea(
-              child: PageView(
+        home: SafeArea(
+          child: Consumer<MainProvider>(
+            builder: (context, value, child) => Scaffold(
+              body: PageView(
                 scrollDirection: Axis.horizontal,
                 controller: _pageController,
                 children: content,
@@ -169,53 +173,49 @@ class _MyAppState extends State<MyApp> {
                   });
                 },
               ),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: const Color.fromARGB(255, 0, 211, 158),
-              selectedFontSize: 15,
-              unselectedFontSize: 12,
-              currentIndex: _index,
-              items: const [
-                BottomNavigationBarItem(
-                  label: 'Currently',
-                  icon: Icon(
-                    Iconsax.calendar_edit,
-                    color: Colors.black,
+              bottomNavigationBar: BottomNavigationBar(
+                backgroundColor: const Color.fromARGB(255, 0, 211, 158),
+                selectedFontSize: 15,
+                unselectedFontSize: 12,
+                currentIndex: _index,
+                items: const [
+                  BottomNavigationBarItem(
+                    label: 'Currently',
+                    icon: Icon(
+                      Iconsax.calendar_edit,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Today',
-                  icon: Icon(
-                    Iconsax.calendar,
-                    color: Colors.black,
+                  BottomNavigationBarItem(
+                    label: 'Today',
+                    icon: Icon(
+                      Iconsax.calendar,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Weekly',
-                  icon: Icon(
-                    Iconsax.calendar_circle,
-                    color: Colors.black,
+                  BottomNavigationBarItem(
+                    label: 'Weekly',
+                    icon: Icon(
+                      Iconsax.calendar_circle,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-              ],
-              unselectedItemColor: Colors.black,
-              onTap: (int newIndex) {
-                setState(() {
-                  _index = newIndex;
-                  _pageController.jumpToPage(_index);
-                });
-              },
-            ),
-            appBar: AppBar(
-              backgroundColor: const Color.fromARGB(255, 0, 211, 158),
-              title: Padding(
-                padding: const EdgeInsets.only(top: 6, bottom: 6),
-                child: SearchAnchor(
+                ],
+                unselectedItemColor: Colors.black,
+                onTap: (int newIndex) {
+                  setState(() {
+                    _index = newIndex;
+                    _pageController.jumpToPage(_index);
+                  });
+                },
+              ),
+              appBar: AppBar(
+                title: SearchAnchor(
                   searchController: searchController,
                   builder: (BuildContext context, SearchController controller) {
                     return SearchBar(
                       controller: controller,
-                      padding: const MaterialStatePropertyAll<EdgeInsets>(
+                      padding: const WidgetStatePropertyAll<EdgeInsets>(
                           EdgeInsets.symmetric(horizontal: 16.0)),
                       onTap: () {
                         controller.openView();
@@ -270,7 +270,6 @@ class _MyAppState extends State<MyApp> {
                           )
                         ];
                       }
-
                       return results
                           .map((city) => ListTile(
                                 title: Text(city.name),
@@ -322,20 +321,20 @@ class _MyAppState extends State<MyApp> {
                     }
                   },
                 ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: IconButton(
+                        onPressed: () {
+                          _getCurrentLocation();
+                        },
+                        icon: const Icon(
+                          Icons.my_location_rounded,
+                          color: Colors.black,
+                        )),
+                  ),
+                ],
               ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: IconButton(
-                      onPressed: () {
-                        _getCurrentLocation();
-                      },
-                      icon: const Icon(
-                        Icons.my_location_rounded,
-                        color: Colors.black,
-                      )),
-                ),
-              ],
             ),
           ),
         ));
@@ -345,7 +344,7 @@ class _MyAppState extends State<MyApp> {
 class SearchView extends StatelessWidget {
   final Iterable<Widget> suggestions;
 
-  SearchView({required this.suggestions});
+  const SearchView({super.key, required this.suggestions});
 
   @override
   Widget build(BuildContext context) {
