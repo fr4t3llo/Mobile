@@ -1,1 +1,1 @@
-GET https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=khouribga
+GET http://api.geonames.org/citiesJSON?name=khouribga

@@ -17,6 +17,7 @@ import 'package:http/http.dart' as http;
 import 'package:weatherappv2_proj/currently.dart';
 import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
+import 'package:weatherappv2_proj/viewmodels/weather.dart';
 import 'package:weatherappv2_proj/weekly.dart';
 // import 'package:flutter_search_bar/flutter_search_bar.dart';
 // ignore: depend_on_referenced_packages
@@ -27,7 +28,7 @@ import 'package:weatherappv2_proj/viewmodels/model.dart';
 void main() {
   runApp(
     DevicePreview(
-        enabled: true,
+        enabled: false,
         // enabled: true, // Enable DevicePreview if necessary
         builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(create: (_) => MainProvider()),
@@ -80,12 +81,13 @@ class _MyAppState extends State<MyApp> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      setState(() {
-        _locationMessage =
-            "Lat: ${position.latitude}, Long: ${position.longitude}";
-        debugPrint(_locationMessage);
-        get_city(position);
-      });
+     setState(() {
+  if (mounted) {
+    _locationMessage = "Lat: ${position.latitude}, Long: ${position.longitude}";
+    debugPrint(_locationMessage);
+    get_city(position);
+  }
+});
     } catch (e) {
       setState(() {
         _locationMessage = "Failed to get location: $e";
@@ -132,13 +134,13 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<WeatherData> getWeather(double latitude, double longitude) async {
+  Future<Weather> getWeather(double latitude, double longitude) async {
     try {
       final response = await http.get(Uri.parse(
-          'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&hourly=temperature_2m'));
+          'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current=temperature_2m,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=GMT'));
 
       if (response.statusCode == 200) {
-        return WeatherData.fromJson(jsonDecode(response.body));
+        return Weather.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Failed to load weather data: ${response.statusCode}');
       }
@@ -220,16 +222,40 @@ class _MyAppState extends State<MyApp> {
                       onTap: () {
                         controller.openView();
                       },
-                      onChanged: (value) {
-                        // Cancel previous timer
-                        _debounceTimer?.cancel();
+                     onChanged: (value) {
+  // Cancel the previous timer if any
+  _debounceTimer?.cancel();
 
-                        // Start new timer to update search
-                        _debounceTimer =
-                            Timer(const Duration(milliseconds: 300), () {
-                          controller.openView();
-                        });
-                      },
+  // Start a new timer for the search query
+  _debounceTimer = Timer(const Duration(milliseconds: 300), () async {
+    // Perform the search after the debounce duration
+    if (value.isNotEmpty) {
+      setState(() {
+        _isLoading = true; // Start loading
+      });
+
+      try {
+        final results = await searchCities(value);
+        setState(() {
+          _isLoading = false; // Stop loading
+        });
+
+        // Pass the results to the UI
+        if (results.isEmpty) {
+          // Handle no results
+        } else {
+          // Show search results
+        }
+      } catch (e) {
+        debugPrint("Error during city search: $e");
+        setState(() {
+          _isLoading = false; // Stop loading
+        });
+      }
+    }
+  });
+}
+,
                       leading: const Icon(Icons.search),
                       hintText: 'Search cities...',
                     );
@@ -287,9 +313,10 @@ class _MyAppState extends State<MyApp> {
 
                                   // Show loading indicator
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Fetching weather data...')));
+                                    const SnackBar(
+                                      content: Text('Fetching weather data...'),
+                                    ),
+                                  );
 
                                   // Fetch weather data
                                   try {
@@ -299,10 +326,11 @@ class _MyAppState extends State<MyApp> {
                                         .read<MainProvider>()
                                         .setWeatherData(weatherData);
                                   } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Failed to load weather data: $e')));
+                                    log("error id : $e");
+                                  //   ScaffoldMessenger.of(context).showSnackBar(
+                                  //       SnackBar(
+                                  //           content: Text(
+                                  //               'Failed to load weather data: $e')));
                                   }
                                 },
                               ))

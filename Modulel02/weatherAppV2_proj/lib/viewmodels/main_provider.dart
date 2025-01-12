@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:weatherappv2_proj/viewmodels/model.dart';
+import 'package:weatherappv2_proj/viewmodels/weather.dart';
 
 class MainProvider extends ChangeNotifier {
   String _city = '';
-  WeatherData? _weatherData;
+  Weather? _weatherData;
 
   String get city => _city;
-  WeatherData? get weatherData => _weatherData;
+  Weather? get weatherData => _weatherData;
 
   void setCity(String newCity) {
     _city = newCity;
     notifyListeners();
   }
 
-  void setWeatherData(WeatherData data) {
+  void setWeatherData(Weather data) {
     _weatherData = data;
     notifyListeners();
   }
