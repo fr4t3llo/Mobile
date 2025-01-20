@@ -81,6 +81,10 @@ class _MyAppState extends State<MyApp> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
+
+
+
+
       setState(() {
         if (mounted) {
           _locationMessage =
