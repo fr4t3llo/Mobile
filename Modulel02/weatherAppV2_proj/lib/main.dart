@@ -76,6 +76,9 @@ class _MyAppState extends State<MyApp> {
         });
         return;
       }
+
+
+      
       // Get the current position
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
