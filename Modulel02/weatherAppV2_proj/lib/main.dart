@@ -381,6 +381,3 @@ class SearchView extends StatelessWidget {
     );
   }
 }
-
-
-Updated on 2025-01-20 13:14:03
