@@ -28,7 +28,7 @@ import 'package:weatherappv2_proj/viewmodels/model.dart';
 void main() {
   runApp(
     DevicePreview(
-        enabled: false,
+        enabled: true,
         // enabled: true, // Enable DevicePreview if necessary
         builder: (context) => MultiProvider(providers: [
               ChangeNotifierProvider(create: (_) => MainProvider()),
@@ -81,13 +81,14 @@ class _MyAppState extends State<MyApp> {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-     setState(() {
-  if (mounted) {
-    _locationMessage = "Lat: ${position.latitude}, Long: ${position.longitude}";
-    debugPrint(_locationMessage);
-    get_city(position);
-  }
-});
+      setState(() {
+        if (mounted) {
+          _locationMessage =
+              "Lat: ${position.latitude}, Long: ${position.longitude}";
+          debugPrint(_locationMessage);
+          get_city(position);
+        }
+      });
     } catch (e) {
       setState(() {
         _locationMessage = "Failed to get location: $e";
@@ -222,40 +223,40 @@ class _MyAppState extends State<MyApp> {
                       onTap: () {
                         controller.openView();
                       },
-                     onChanged: (value) {
-  // Cancel the previous timer if any
-  _debounceTimer?.cancel();
+                      onChanged: (value) {
+                        // Cancel the previous timer if any
+                        _debounceTimer?.cancel();
 
-  // Start a new timer for the search query
-  _debounceTimer = Timer(const Duration(milliseconds: 300), () async {
-    // Perform the search after the debounce duration
-    if (value.isNotEmpty) {
-      setState(() {
-        _isLoading = true; // Start loading
-      });
+                        // Start a new timer for the search query
+                        _debounceTimer =
+                            Timer(const Duration(milliseconds: 300), () async {
+                          // Perform the search after the debounce duration
+                          if (value.isNotEmpty) {
+                            setState(() {
+                              _isLoading = true; // Start loading
+                            });
 
-      try {
-        final results = await searchCities(value);
-        setState(() {
-          _isLoading = false; // Stop loading
-        });
+                            try {
+                              final results = await searchCities(value);
+                              setState(() {
+                                _isLoading = false; // Stop loading
+                              });
 
-        // Pass the results to the UI
-        if (results.isEmpty) {
-          // Handle no results
-        } else {
-          // Show search results
-        }
-      } catch (e) {
-        debugPrint("Error during city search: $e");
-        setState(() {
-          _isLoading = false; // Stop loading
-        });
-      }
-    }
-  });
-}
-,
+                              // Pass the results to the UI
+                              if (results.isEmpty) {
+                                // Handle no results
+                              } else {
+                                // Show search results
+                              }
+                            } catch (e) {
+                              debugPrint("Error during city search: $e");
+                              setState(() {
+                                _isLoading = false; // Stop loading
+                              });
+                            }
+                          }
+                        });
+                      },
                       leading: const Icon(Icons.search),
                       hintText: 'Search cities...',
                     );
@@ -327,10 +328,10 @@ class _MyAppState extends State<MyApp> {
                                         .setWeatherData(weatherData);
                                   } catch (e) {
                                     log("error id : $e");
-                                  //   ScaffoldMessenger.of(context).showSnackBar(
-                                  //       SnackBar(
-                                  //           content: Text(
-                                  //               'Failed to load weather data: $e')));
+                                    //   ScaffoldMessenger.of(context).showSnackBar(
+                                    //       SnackBar(
+                                    //           content: Text(
+                                    //               'Failed to load weather data: $e')));
                                   }
                                 },
                               ))
