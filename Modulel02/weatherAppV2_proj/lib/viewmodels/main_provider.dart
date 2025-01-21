@@ -18,10 +18,3 @@ class MainProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-
-
-
-
-
-
