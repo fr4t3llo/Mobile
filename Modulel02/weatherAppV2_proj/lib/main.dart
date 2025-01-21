@@ -326,11 +326,11 @@ class _MyAppState extends State<MyApp> {
                                         .read<MainProvider>()
                                         .setWeatherData(weatherData);
                                   } catch (e) {
-                                    log("error id : $e");
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  'Failed to load weather data: $e')));
+                                    // log("error id : $e");
+                                    //   ScaffoldMessenger.of(context).showSnackBar(
+                                    //       SnackBar(
+                                    //           content: Text(
+                                    //               'Failed to load weather data: $e')));
                                   }
                                 },
                               ))
