@@ -104,7 +104,6 @@ class _MyAppState extends State<MyApp> {
         .setCity(jsonDecode(response.body)["address"]["city"]);
     // log(response.body);
   }
-
   Future<List<City>> searchCities(String query) async {
     if (query.isEmpty) return [];
 
