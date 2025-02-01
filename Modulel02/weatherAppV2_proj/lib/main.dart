@@ -94,7 +94,6 @@ class _MyAppState extends State<MyApp> {
       });
     }
   }
-
   // ignore: non_constant_identifier_names
   Future get_city(Position p) async {
     var response = await http.Client().get(Uri.parse(
