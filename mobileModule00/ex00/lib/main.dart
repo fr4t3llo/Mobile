@@ -7,9 +7,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  void clickMe() {
-    debugPrint("Button pressed");
-  }
+  
 
   @override
   Widget build(BuildContext context) {

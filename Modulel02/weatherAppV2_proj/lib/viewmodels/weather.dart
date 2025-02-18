@@ -55,7 +55,7 @@ class Weather {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['latitude'] = latitude;
     data['longitude'] = longitude;
     data['generationtime_ms'] = generationtimeMs;
@@ -108,7 +108,7 @@ class CurrentUnits {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['time'] = time;
     data['interval'] = interval;
     data['temperature_2m'] = temperature2m;
@@ -141,7 +141,7 @@ class Current {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['time'] = time;
     data['interval'] = interval;
     data['temperature_2m'] = temperature2m;
@@ -168,7 +168,7 @@ class HourlyUnits {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['time'] = time;
     data['temperature_2m'] = temperature2m;
     data['weather_code'] = weatherCode;
@@ -193,7 +193,7 @@ class Hourly {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['time'] = time;
     data['temperature_2m'] = temperature2m;
     data['weather_code'] = weatherCode;
@@ -222,7 +222,7 @@ class DailyUnits {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['time'] = time;
     data['weather_code'] = weatherCode;
     data['temperature_2m_max'] = temperature2mMax;

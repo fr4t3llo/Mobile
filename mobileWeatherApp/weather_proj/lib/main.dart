@@ -146,17 +146,16 @@ class _MyAppState extends State<MyApp> {
                             String newValue = value.city;
                             value.setCity('');
                             value.setCity('Geolocation');
-                            debugPrint(newValue);
-                            // content[_index] = Text(
-                            //   newValue.isEmpty
-                            //       ? 'No Location Provided'
-                            //       : newValue,
-                            //   style: const TextStyle(
-                            //     fontFamily: 'my',
-                            //     fontWeight: FontWeight.bold,
-                            //     fontSize: 25,
-                            //   ),
-                            // );
+                            content[_index] = Text(
+                              newValue.isEmpty
+                                  ? 'No Location Provided'
+                                  : newValue,
+                              style: const TextStyle(
+                                fontFamily: 'my',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 25,
+                              ),
+                            );
                           });
                         },
                         icon: const Icon(
