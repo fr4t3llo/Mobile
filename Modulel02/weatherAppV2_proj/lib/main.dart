@@ -42,9 +42,83 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _locationMessage = "Press the button to get location";
+
+  void _handleSearchChange(String value) {
+    // Cancel the previous timer if it exists
+    if (_debounceTimer?.isActive ?? false) {
+      _debounceTimer!.cancel();
+    }
+
+    // Set a new timer
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        _isLoading = value.isNotEmpty;
+      });
+    });
+  }
+
+  Future<Iterable<Widget>> _buildSearchSuggestions(
+      BuildContext context, SearchController controller) async {
+    if (controller.text.isEmpty) {
+      return const [];
+    }
+
+    try {
+      final cities = await searchCities(controller.text);
+
+      return cities.map((city) => ListTile(
+            title: Text(city.name),
+            subtitle: Text('${city.region}, ${city.country}'),
+            onTap: () async {
+              controller.closeView(city.name);
+              setState(() {
+                _isLoading = true;
+              });
+
+              try {
+                final weatherData =
+                    await getWeather(city.latitude, city.longitude);
+                if (mounted) {
+                  context.read<MainProvider>().setWeatherData(weatherData);
+                  context.read<MainProvider>().setCity(city.name);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Weather updated for ${city.name}'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error fetching weather data: $e'),
+                      duration: const Duration(seconds: 4),
+                    ),
+                  );
+                }
+              } finally {
+                if (mounted) {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                }
+              }
+            },
+          ));
+    } catch (e) {
+      return [
+        const ListTile(
+          title: Text('Error searching for cities'),
+        )
+      ];
+    }
+  }
+
   Future<void> _getCurrentLocation() async {
     try {
-      // Check for permissions
+      // Check if location services are enabled
       bool isLocationServiceEnabled =
           await Geolocator.isLocationServiceEnabled();
       if (!isLocationServiceEnabled) {
@@ -72,42 +146,76 @@ class _MyAppState extends State<MyApp> {
         return;
       }
 
+      // Show loading indicator
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(
+      //     content: Text('Fetching your location...'),
+      //     duration: Duration(seconds: 2),
+      //   ),
+      // );
+
       // Get the current position
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      setState(() {
-        if (mounted) {
-          _locationMessage =
-              "Lat: ${position.latitude}, Long: ${position.longitude}";
-          get_city(position);
+
+      // Fetch weather data for the current location
+      final weatherData =
+          await getWeather(position.latitude, position.longitude);
+      context.read<MainProvider>().setWeatherData(weatherData);
+
+      // Get city name from coordinates
+      final response = await http.get(Uri.parse(
+          "https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}&addressdetails=1"));
+
+      if (response.statusCode == 200) {
+        final address = jsonDecode(response.body)["address"];
+        if (address != null) {
+          // Try to get the most specific location name
+          final locationName = address["city"] ??
+              address["town"] ??
+              address["village"] ??
+              address["suburb"] ??
+              address["county"] ??
+              "Unknown Location";
+
+          // Update the city in the provider
+          context.read<MainProvider>().setCity(locationName);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Weather updated for $locationName'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
         }
-      });
+      }
     } catch (e) {
       setState(() {
-        _locationMessage = "Failed to get location: $e";
+        _locationMessage = "Failed to fetch location.";
       });
+      print("Error: $e");
     }
   }
 
   // ignore: non_constant_identifier_names
   Future get_city(Position p) async {
-  if (!mounted) return; // Check before starting the operation
-  
-  var response = await http.Client().get(Uri.parse(
-      "https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
-  
-  if (!mounted) return; // Check again after the async operation
-  
-  try {
-    final address = jsonDecode(response.body)["address"];
-    if (address != null && address.containsKey("city")) {
-      log(address["city"]);
-      context.read<MainProvider>().setCity(address["city"]);
+    if (!mounted) return; // Check before starting the operation
+
+    var response = await http.Client().get(Uri.parse(
+        "https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
+
+    if (!mounted) return; // Check again after the async operation
+
+    try {
+      final address = jsonDecode(response.body)["address"];
+      if (address != null && address.containsKey("city")) {
+        log(address["city"]);
+        context.read<MainProvider>().setCity(address["city"]);
+      }
+    } catch (e) {
+      log("Error parsing city: $e");
     }
-  } catch (e) {
-    log("Error parsing city: $e");
   }
-}
 
   Future<List<City>> searchCities(String query) async {
     if (query.isEmpty) return [];
@@ -136,7 +244,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-// In getWeather function in main.dart:
   Future<Weather> getWeather(double latitude, double longitude) async {
     try {
       final response = await http
@@ -167,229 +274,94 @@ class _MyAppState extends State<MyApp> {
   final PageController _pageController = PageController(initialPage: 0);
   final SearchController searchController = SearchController();
   List<Widget> content = const [CurrentlyPage(), TodayPage(), WeeklyPage()];
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Consumer<MainProvider>(
-          builder: (context, value, child) => Scaffold(
-            body: PageView(
-              scrollDirection: Axis.horizontal,
-              controller: _pageController,
-              children: content,
-              onPageChanged: (value) {
-                setState(() {
-                  _index = value;
-                });
-              },
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              backgroundColor: const Color.fromARGB(255, 0, 211, 158),
-              selectedFontSize: 15,
-              unselectedFontSize: 12,
-              currentIndex: _index,
-              items: const [
-                BottomNavigationBarItem(
-                  label: 'Currently',
-                  icon: Icon(
-                    Iconsax.calendar_edit,
-                    color: Colors.black,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Today',
-                  icon: Icon(
-                    Iconsax.calendar,
-                    color: Colors.black,
-                  ),
-                ),
-                BottomNavigationBarItem(
-                  label: 'Weekly',
-                  icon: Icon(
-                    Iconsax.calendar_circle,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-              unselectedItemColor: Colors.black,
-              onTap: (int newIndex) {
-                setState(() {
-                  _index = newIndex;
-                  _pageController.jumpToPage(_index);
-                });
-              },
-            ),
-            appBar: AppBar(
-              title: SearchAnchor(
-                searchController: searchController,
-                builder: (BuildContext context, SearchController controller) {
-                  return SearchBar(
-                    controller: controller,
-                    padding: const WidgetStatePropertyAll<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 16.0)),
-                    onTap: () {
-                      controller.openView();
-                    },
-                    onChanged: (value) {
-                      // Cancel the previous timer if any
-                      _debounceTimer?.cancel();
-
-                      // Start a new timer for the search query
-                      _debounceTimer =
-                          Timer(const Duration(milliseconds: 300), () async {
-                        // Perform the search after the debounce duration
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            _isLoading = true; // Start loading
-                          });
-
-                          try {
-                            final results = await searchCities(value);
-                            setState(() {
-                              _isLoading = false; // Stop loading
-                            });
-
-                            // Pass the results to the UI
-                            if (results.isEmpty) {
-                              // Handle no results
-                            } else {
-                              // Show search results
-                            }
-                          } catch (e) {
-                            debugPrint("Error during city search: $e");
-                            setState(() {
-                              _isLoading = false; // Stop loading
-                            });
-                          }
-                        }
-                      });
-                    },
-                    leading: const Icon(Icons.search),
-                    hintText: 'Search cities...',
-                  );
-                },
-                suggestionsBuilder:
-                    (BuildContext context, SearchController controller) async {
-                  if (controller.text.isEmpty) {
-                    return [
-                      const ListTile(
-                        title: Text('Type to search for a city...'),
-                        enabled: false,
-                      )
-                    ];
-                  }
-
-                  if (_isLoading) {
-                    return [
-                      const ListTile(
-                        leading: CircularProgressIndicator(),
-                        title: Text('Searching...'),
-                        enabled: false,
-                      )
-                    ];
-                  }
-
-                  setState(() {
-                    _isLoading = true;
-                  });
-
-                  try {
-                    final results = await searchCities(controller.text);
-
-                    if (results.isEmpty) {
-                      return [
-                        const ListTile(
-                          title: Text('No cities found'),
-                          enabled: false,
-                        )
-                      ];
-                    }
-                    return results
-                        .map((city) => ListTile(
-                              title: Text(city.name),
-                              subtitle: Text('${city.region}, ${city.country}'),
-                              onTap: () async {
-                                final cityString =
-                                    '${city.name}, ${city.region}, ${city.country}';
-                                controller.closeView(cityString);
-
-                                // Update the city in MainProvider
-                                context.read<MainProvider>().setCity(city.name);
-
-                                // Show loading indicator
-
-                                // Fetch weather data
-                                // In main.dart, update the catch block in the ListTile onTap callback:
-
-                                try {
-                                  final weatherData = await getWeather(
-                                      city.latitude, city.longitude);
-                                  context
-                                      .read<MainProvider>()
-                                      .setWeatherData(weatherData);
-                                } catch (e) {
-                                  // Re-enable this to show error messages
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    content:
-                                        Text('Failed to load weather data: $e'),
-                                    duration: const Duration(
-                                        seconds: 4), // Slightly longer duration
-                                    action: SnackBarAction(
-                                      label: 'Retry',
-                                      onPressed: () async {
-                                        // Allow user to retry the operation
-                                        try {
-                                          final weatherData = await getWeather(
-                                              city.latitude, city.longitude);
-                                          context
-                                              .read<MainProvider>()
-                                              .setWeatherData(weatherData);
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                                content: Text(
-                                                    'Still unable to connect: $e')),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ));
-                                }
-                              },
-                            ))
-                        .toList();
-                  } catch (e) {
-                    return [
-                      ListTile(
-                        title: Text('Error searching cities: $e'),
-                        enabled: false,
-                      )
-                    ];
-                  } finally {
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  }
-                },
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: IconButton(
-                      onPressed: () {
-                        _getCurrentLocation();
-                      },
-                      icon: const Icon(
-                        Icons.my_location_rounded,
-                        color: Colors.black,
-                      )),
-                ),
-              ],
-            ),
+      debugShowCheckedModeBanner: false,
+      home: Consumer<MainProvider>(
+        builder: (context, value, child) => Scaffold(
+          body: PageView(
+            scrollDirection: Axis.horizontal,
+            controller: _pageController,
+            children: content,
+            onPageChanged: (value) {
+              setState(() {
+                _index = value;
+              });
+            },
           ),
-        ));
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: const Color.fromARGB(255, 0, 211, 158),
+            selectedFontSize: 15,
+            unselectedFontSize: 12,
+            currentIndex: _index,
+            items: const [
+              BottomNavigationBarItem(
+                label: 'Currently',
+                icon: Icon(
+                  Iconsax.calendar_edit,
+                  color: Colors.black,
+                ),
+              ),
+              BottomNavigationBarItem(
+                label: 'Today',
+                icon: Icon(
+                  Iconsax.calendar,
+                  color: Colors.black,
+                ),
+              ),
+              BottomNavigationBarItem(
+                label: 'Weekly',
+                icon: Icon(
+                  Iconsax.calendar_circle,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+            unselectedItemColor: Colors.black,
+            onTap: (int newIndex) {
+              setState(() {
+                _index = newIndex;
+                _pageController.jumpToPage(_index);
+              });
+            },
+          ),
+          appBar: AppBar(
+            title: SearchAnchor(
+              searchController: searchController,
+              builder: (BuildContext context, SearchController controller) {
+                return SearchBar(
+                  controller: controller,
+                  padding: const WidgetStatePropertyAll<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 16.0)),
+                  onTap: () {
+                    controller.openView();
+                  },
+                  onChanged: _handleSearchChange,
+                  leading: const Icon(Icons.search),
+                  hintText: 'Search cities...',
+                );
+              },
+              suggestionsBuilder: _buildSearchSuggestions,
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: IconButton(
+                    onPressed: () {
+                      _getCurrentLocation();
+                    },
+                    icon: const Icon(
+                      Icons.my_location_rounded,
+                      color: Colors.black,
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
