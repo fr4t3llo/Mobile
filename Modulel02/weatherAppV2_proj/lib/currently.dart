@@ -91,72 +91,76 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
 
       return Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              city,
-              style: const TextStyle(
-                fontFamily: 'my',
-                fontWeight: FontWeight.bold,
-                fontSize: 32,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 40),
-            // Temperature
-            Row(
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '${temperatureC?.toStringAsFixed(1) ?? '--'}',
+                  city,
                   style: const TextStyle(
                     fontFamily: 'my',
                     fontWeight: FontWeight.bold,
-                    fontSize: 70,
+                    fontSize: 32,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                const Text(
-                  '°C',
-                  style: TextStyle(
-                    fontFamily: 'my',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                  ),
+                const SizedBox(height: 40),
+                // Temperature
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${temperatureC?.toStringAsFixed(1) ?? '--'}',
+                      style: const TextStyle(
+                        fontFamily: 'my',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 70,
+                      ),
+                    ),
+                    const Text(
+                      '°C',
+                      style: TextStyle(
+                        fontFamily: 'my',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Weather description
-            Text(
-              getWeatherDescription(weatherCode),
-              style: const TextStyle(
-                fontFamily: 'my',
-                fontSize: 24,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 40),
-            // Wind speed
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.air, size: 24),
-                const SizedBox(width: 10),
+                const SizedBox(height: 20),
+                // Weather description
                 Text(
-                  'Wind: ${windSpeed?.toStringAsFixed(1) ?? '--'} km/h',
+                  getWeatherDescription(weatherCode),
                   style: const TextStyle(
                     fontFamily: 'my',
-                    fontSize: 18,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500,
                   ),
+                  textAlign: TextAlign.center,
                 ),
+                const SizedBox(height: 40),
+                // Wind speed
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.air, size: 24),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Wind: ${windSpeed?.toStringAsFixed(1) ?? '--'} km/h',
+                      style: const TextStyle(
+                        fontFamily: 'my',
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+                // Add more widgets as needed
               ],
             ),
-            // Add more widgets as needed
-          ],
+          ),
         ),
       );
     });

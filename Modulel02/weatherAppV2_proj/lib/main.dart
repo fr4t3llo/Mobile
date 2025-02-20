@@ -280,7 +280,7 @@ class _MyAppState extends State<MyApp> {
             },
           ),
           bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: const Color.fromARGB(255, 0, 211, 158),
+            backgroundColor: const Color.fromARGB(255, 0, 174, 255),
             selectedFontSize: 15,
             unselectedFontSize: 12,
             currentIndex: _index,
@@ -316,11 +316,10 @@ class _MyAppState extends State<MyApp> {
             },
           ),
           appBar: AppBar(
-            // title:
-
+            backgroundColor: const Color.fromARGB(255, 0, 174, 255),
             actions: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
                     width: 300,
