@@ -65,12 +65,15 @@ class _MyAppState extends State<MyApp> {
 
     try {
       final cities = await searchCities(controller.text);
+      final mainProvider = Provider.of<MainProvider>(context, listen: false);
 
       return cities.map((city) => ListTile(
             title: Text(city.name),
             subtitle: Text('${city.region}, ${city.country}'),
             onTap: () async {
               controller.closeView(city.name);
+              if (!mounted) return;
+
               setState(() {
                 _isLoading = true;
               });
@@ -78,26 +81,13 @@ class _MyAppState extends State<MyApp> {
               try {
                 final weatherData =
                     await getWeather(city.latitude, city.longitude);
-                if (mounted) {
-                  context.read<MainProvider>().setWeatherData(weatherData);
-                  context.read<MainProvider>().setCity(city.name);
+                if (!mounted) return;
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Weather updated for ${city.name}'),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                }
+                // Update state using the stored provider reference
+                mainProvider.setWeatherData(weatherData);
+                mainProvider.setCity(city.name);
               } catch (e) {
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Error fetching weather data: $e'),
-                      duration: const Duration(seconds: 4),
-                    ),
-                  );
-                }
+                log('Error fetching weather data: $e');
               } finally {
                 if (mounted) {
                   setState(() {
@@ -117,14 +107,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _getCurrentLocation() async {
+    if (!mounted) return;
+
     try {
-      // Check if location services are enabled
       bool isLocationServiceEnabled =
           await Geolocator.isLocationServiceEnabled();
       if (!isLocationServiceEnabled) {
-        setState(() {
-          _locationMessage = "Location services are disabled.";
-        });
+        if (mounted) {
+          setState(() {
+            _locationMessage = "Location services are disabled.";
+          });
+        }
         return;
       }
 
@@ -132,45 +125,45 @@ class _MyAppState extends State<MyApp> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          setState(() {
-            _locationMessage = "Location permissions are denied.";
-          });
+          if (mounted) {
+            setState(() {
+              _locationMessage = "Location permissions are denied.";
+            });
+          }
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        setState(() {
-          _locationMessage = "Location permissions are permanently denied.";
-        });
+        if (mounted) {
+          setState(() {
+            _locationMessage = "Location permissions are permanently denied.";
+          });
+        }
         return;
       }
 
-      // Show loading indicator
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(
-      //     content: Text('Fetching your location...'),
-      //     duration: Duration(seconds: 2),
-      //   ),
-      // );
-
-      // Get the current position
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      // Fetch weather data for the current location
+      if (!mounted) return;
+
       final weatherData =
           await getWeather(position.latitude, position.longitude);
-      context.read<MainProvider>().setWeatherData(weatherData);
 
-      // Get city name from coordinates
+      if (!mounted) return;
+
+      Provider.of<MainProvider>(context, listen: false)
+          .setWeatherData(weatherData);
+
       final response = await http.get(Uri.parse(
           "https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}&addressdetails=1"));
+
+      if (!mounted) return;
 
       if (response.statusCode == 200) {
         final address = jsonDecode(response.body)["address"];
         if (address != null) {
-          // Try to get the most specific location name
           final locationName = address["city"] ??
               address["town"] ??
               address["village"] ??
@@ -178,21 +171,16 @@ class _MyAppState extends State<MyApp> {
               address["county"] ??
               "Unknown Location";
 
-          // Update the city in the provider
-          context.read<MainProvider>().setCity(locationName);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Weather updated for $locationName'),
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          Provider.of<MainProvider>(context, listen: false)
+              .setCity(locationName);
         }
       }
     } catch (e) {
-      setState(() {
-        _locationMessage = "Failed to fetch location.";
-      });
+      if (mounted) {
+        setState(() {
+          _locationMessage = "Failed to fetch location.";
+        });
+      }
       print("Error: $e");
     }
   }
@@ -209,7 +197,7 @@ class _MyAppState extends State<MyApp> {
     try {
       final address = jsonDecode(response.body)["address"];
       if (address != null && address.containsKey("city")) {
-        log(address["city"]);
+        // log(address["city"]);
         context.read<MainProvider>().setCity(address["city"]);
       }
     } catch (e) {
@@ -223,7 +211,7 @@ class _MyAppState extends State<MyApp> {
     try {
       final response = await http.get(Uri.parse(
           'https://geocoding-api.open-meteo.com/v1/search?name=${Uri.encodeComponent(query)}&count=10&language=en&format=json'));
-      log(response.body);
+      // log(response.body);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['results'] != null) {
@@ -338,6 +326,16 @@ class _MyAppState extends State<MyApp> {
                     width: 300,
                     height: 50,
                     child: SearchAnchor(
+                      dividerColor: Colors.black,
+                      viewSurfaceTintColor: Colors.white,
+                      headerHintStyle: const TextStyle(
+                        fontFamily: 'my',
+                        fontWeight: FontWeight.bold,
+                      ),
+                      headerTextStyle: const TextStyle(
+                        fontFamily: 'my',
+                        fontWeight: FontWeight.bold,
+                      ),
                       searchController: searchController,
                       builder:
                           (BuildContext context, SearchController controller) {
