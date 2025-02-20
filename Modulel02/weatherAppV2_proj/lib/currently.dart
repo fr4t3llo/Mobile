@@ -113,7 +113,7 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${temperatureC?.toStringAsFixed(1) ?? '--'}',
+                      temperatureC?.toStringAsFixed(1) ?? '--',
                       style: const TextStyle(
                         fontFamily: 'my',
                         fontWeight: FontWeight.bold,

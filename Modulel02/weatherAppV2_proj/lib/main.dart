@@ -1,5 +1,5 @@
 // ignore: depend_on_referenced_packages
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, unused_field
 
 import 'dart:convert';
 import 'dart:developer';
@@ -181,7 +181,7 @@ class _MyAppState extends State<MyApp> {
           _locationMessage = "Failed to fetch location.";
         });
       }
-      print("Error: $e");
+      log("Error: $e");
     }
   }
 
