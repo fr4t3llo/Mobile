@@ -328,34 +328,46 @@ class _MyAppState extends State<MyApp> {
             },
           ),
           appBar: AppBar(
-            title: SearchAnchor(
-              searchController: searchController,
-              builder: (BuildContext context, SearchController controller) {
-                return SearchBar(
-                  controller: controller,
-                  padding: const WidgetStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0)),
-                  onTap: () {
-                    controller.openView();
-                  },
-                  onChanged: _handleSearchChange,
-                  leading: const Icon(Icons.search),
-                  hintText: 'Search cities...',
-                );
-              },
-              suggestionsBuilder: _buildSearchSuggestions,
-            ),
+            // title:
+
             actions: [
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: IconButton(
-                    onPressed: () {
-                      _getCurrentLocation();
-                    },
-                    icon: const Icon(
-                      Icons.my_location_rounded,
-                      color: Colors.black,
-                    )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    height: 50,
+                    child: SearchAnchor(
+                      searchController: searchController,
+                      builder:
+                          (BuildContext context, SearchController controller) {
+                        return SearchBar(
+                          controller: controller,
+                          padding: const WidgetStatePropertyAll<EdgeInsets>(
+                              EdgeInsets.symmetric(horizontal: 16.0)),
+                          onTap: () {
+                            controller.openView();
+                          },
+                          onChanged: _handleSearchChange,
+                          leading: const Icon(Icons.search),
+                          hintText: 'Search cities...',
+                        );
+                      },
+                      suggestionsBuilder: _buildSearchSuggestions,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: IconButton(
+                        onPressed: () {
+                          _getCurrentLocation();
+                        },
+                        icon: const Icon(
+                          Icons.my_location_rounded,
+                          color: Colors.black,
+                        )),
+                  ),
+                ],
               ),
             ],
           ),
