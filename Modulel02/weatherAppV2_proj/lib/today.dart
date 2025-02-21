@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
@@ -11,7 +13,6 @@ class TodayPage extends StatefulWidget {
 }
 
 class _TodayPageState extends State<TodayPage> {
-  // Helper function to get weather description based on weather code
   String getWeatherDescription(int? weatherCode) {
     if (weatherCode == null) return 'Unknown';
 
@@ -62,7 +63,6 @@ class _TodayPageState extends State<TodayPage> {
     }
   }
 
-  // Helper function to get weather icon
   IconData getWeatherIcon(int? weatherCode) {
     if (weatherCode == null) return Icons.question_mark;
 
@@ -114,7 +114,7 @@ class _TodayPageState extends State<TodayPage> {
         );
       }
 
-      // Filter to get only today's data
+      // Filter to get only todays data
       final now = DateTime.now();
       final todayDateString = DateFormat('yyyy-MM-dd').format(now);
 
@@ -229,5 +229,37 @@ class _TodayPageState extends State<TodayPage> {
         ],
       );
     });
+  }
+
+  Widget buildErrorWidget(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.signal_wifi_off,
+            size: 64,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: 'my',
+              fontSize: 18,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              // Provider.of<MainProvider>(context, listen: false).clearError();
+            },
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
   }
 }

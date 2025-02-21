@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
@@ -11,10 +13,9 @@ class WeeklyPage extends StatefulWidget {
 }
 
 class _WeeklyPageState extends State<WeeklyPage> {
-  // Helper function to get weather description based on weather code
   String getWeatherDescription(int? weatherCode) {
     if (weatherCode == null) return 'Unknown';
-    
+
     switch (weatherCode) {
       case 0:
         return 'Clear sky';
@@ -62,10 +63,9 @@ class _WeeklyPageState extends State<WeeklyPage> {
     }
   }
 
-  // Helper function to get weather icon
   IconData getWeatherIcon(int? weatherCode) {
     if (weatherCode == null) return Icons.question_mark;
-    
+
     if (weatherCode == 0) return Icons.wb_sunny;
     if (weatherCode >= 1 && weatherCode <= 3) return Icons.cloud;
     if (weatherCode >= 45 && weatherCode <= 48) return Icons.foggy;
@@ -75,14 +75,13 @@ class _WeeklyPageState extends State<WeeklyPage> {
     if (weatherCode >= 80 && weatherCode <= 82) return Icons.beach_access;
     if (weatherCode >= 85 && weatherCode <= 86) return Icons.snowing;
     if (weatherCode >= 95) return Icons.flash_on;
-    
+
     return Icons.question_mark;
   }
 
-  // Helper to format dates
   String formatDate(String isoDate) {
     final date = DateTime.parse(isoDate);
-    return DateFormat('EEE, MMM d').format(date); // e.g., "Mon, Jan 1"
+    return DateFormat('EEE, MMM d').format(date);
   }
 
   @override
@@ -90,7 +89,7 @@ class _WeeklyPageState extends State<WeeklyPage> {
     return Consumer<MainProvider>(builder: (context, provider, child) {
       final weatherData = provider.weatherData;
       final city = provider.city;
-      
+
       // Check if weather data is available
       if (weatherData == null) {
         return const Center(
@@ -104,7 +103,7 @@ class _WeeklyPageState extends State<WeeklyPage> {
           ),
         );
       }
-      
+
       // Extract daily data
       final daily = weatherData.daily;
       if (daily == null || daily.time == null || daily.time!.isEmpty) {
@@ -119,7 +118,7 @@ class _WeeklyPageState extends State<WeeklyPage> {
           ),
         );
       }
-      
+
       return Column(
         children: [
           Padding(
@@ -142,15 +141,15 @@ class _WeeklyPageState extends State<WeeklyPage> {
                 final maxTemp = daily.temperature2mMax![index];
                 final minTemp = daily.temperature2mMin![index];
                 final weatherCode = daily.weatherCode![index];
-                
+
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Weather icon
                         Container(
                           width: 60,
                           height: 60,
@@ -196,8 +195,8 @@ class _WeeklyPageState extends State<WeeklyPage> {
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.arrow_upward, 
-                                  size: 14, color: Colors.red),
+                                const Icon(Icons.arrow_upward,
+                                    size: 14, color: Colors.red),
                                 Text(
                                   '${maxTemp.toStringAsFixed(1)}°C',
                                   style: const TextStyle(
@@ -211,8 +210,8 @@ class _WeeklyPageState extends State<WeeklyPage> {
                             const SizedBox(height: 4),
                             Row(
                               children: [
-                                const Icon(Icons.arrow_downward, 
-                                  size: 14, color: Colors.blue),
+                                const Icon(Icons.arrow_downward,
+                                    size: 14, color: Colors.blue),
                                 Text(
                                   '${minTemp.toStringAsFixed(1)}°C',
                                   style: const TextStyle(
@@ -234,5 +233,37 @@ class _WeeklyPageState extends State<WeeklyPage> {
         ],
       );
     });
+  }
+
+  Widget buildErrorWidget(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.signal_wifi_off,
+            size: 64,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: 'my',
+              fontSize: 18,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              // Provider.of<MainProvider>(context, listen: false).clearError();
+            },
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
   }
 }

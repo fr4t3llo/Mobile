@@ -10,12 +10,8 @@ class CurrentlyPage extends StatefulWidget {
 }
 
 class _CurrentlyPageState extends State<CurrentlyPage> {
-  // Helper function to get weather description based on weather code
   String getWeatherDescription(int? weatherCode) {
     if (weatherCode == null) return 'Unknown';
-
-    // Based on WMO Weather interpretation codes (WW)
-    // Reference: https://www.nodc.noaa.gov/archive/arc0021/0002199/1.1/data/0-data/HTML/WMO-CODE/WMO4677.HTM
     switch (weatherCode) {
       case 0:
         return 'Clear sky';
@@ -68,6 +64,41 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
     return Consumer<MainProvider>(builder: (context, provider, child) {
       final weatherData = provider.weatherData;
       final city = provider.city;
+      if (provider.isLoading) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+
+      if (provider.hasError) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 48,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                provider.errorMessage,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontFamily: 'my',
+                  fontSize: 18,
+                  color: Colors.red,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => provider.clearError(),
+                child: const Text('Try Again'),
+              ),
+            ],
+          ),
+        );
+      }
 
       // Check if weather data is available
       if (weatherData == null) {
@@ -157,12 +188,43 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
                     ),
                   ],
                 ),
-                // Add more widgets as needed
               ],
             ),
           ),
         ),
       );
     });
+  }
+
+  Widget buildErrorWidget(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.signal_wifi_off,
+            size: 64,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: 'my',
+              fontSize: 18,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              // Provider.of<MainProvider>(context, listen: false).clearError();
+            },
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
   }
 }

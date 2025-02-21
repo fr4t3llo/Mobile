@@ -1,29 +1,19 @@
-// ignore: depend_on_referenced_packages
-// ignore_for_file: use_build_context_synchronously, unused_field
 
+// ignore_for_file: use_build_context_synchronously, unused_field, depend_on_referenced_packages
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:async';
-
-// ignore: depend_on_referenced_packages
-
-// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
-// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:weatherappv2_proj/currently.dart';
 import 'package:weatherappv2_proj/today.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:weatherappv2_proj/viewmodels/weather.dart';
 import 'package:weatherappv2_proj/weekly.dart';
-// import 'package:flutter_search_bar/flutter_search_bar.dart';
-// ignore: depend_on_referenced_packages
 import 'package:geolocator/geolocator.dart';
 import 'package:weatherappv2_proj/viewmodels/model.dart';
-// Ensure you have the correct package for icons
 
 void main() {
   runApp(
@@ -41,15 +31,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _locationMessage = "Press the button to get location";
+  final String _locationMessage = "Press the button to get location";
 
   void _handleSearchChange(String value) {
-    // Cancel the previous timer if it exists
     if (_debounceTimer?.isActive ?? false) {
       _debounceTimer!.cancel();
     }
 
-    // Set a new timer
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       setState(() {
         _isLoading = value.isNotEmpty;
@@ -63,61 +51,83 @@ class _MyAppState extends State<MyApp> {
       return const [];
     }
 
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+ if (!mainProvider.hasInternetConnection) {
+    return [
+     const  ListTile(
+        leading:  Icon(Icons.signal_wifi_off, color: Colors.red),
+        title:  Text('No internet connection'),
+        subtitle:  Text('Please check your connection and try again'),
+      )
+    ];
+  }
+
+    mainProvider.setLoading(true);
+    mainProvider.clearError();
+
     try {
       final cities = await searchCities(controller.text);
-      final mainProvider = Provider.of<MainProvider>(context, listen: false);
+
+      if (cities.isEmpty) {
+        mainProvider.setError(
+            'No cities found with that name. Please try another search.');
+        return [
+          ListTile(
+            leading: const Icon(Icons.error_outline, color: Colors.red),
+            title: Text(mainProvider.errorMessage),
+          )
+        ];
+      }
 
       return cities.map((city) => ListTile(
             title: Text(city.name),
             subtitle: Text('${city.region}, ${city.country}'),
             onTap: () async {
               controller.closeView(city.name);
-              if (!mounted) return;
-
-              setState(() {
-                _isLoading = true;
-              });
+              mainProvider.setLoading(true);
+              mainProvider.clearError();
 
               try {
                 final weatherData =
                     await getWeather(city.latitude, city.longitude);
-                if (!mounted) return;
-
-                // Update state using the stored provider reference
                 mainProvider.setWeatherData(weatherData);
                 mainProvider.setCity(city.name);
+                // mainProvider.setCountry(city.country);
               } catch (e) {
-                log('Error fetching weather data: $e');
+                mainProvider.setError(
+                    'Failed to fetch weather data. Please check your connection and try again.');
               } finally {
-                if (mounted) {
-                  setState(() {
-                    _isLoading = false;
-                  });
-                }
+                mainProvider.setLoading(false);
               }
             },
           ));
     } catch (e) {
+      mainProvider.setError(
+          'Failed to search for cities. Please check your connection and try again.');
       return [
-        const ListTile(
-          title: Text('Error searching for cities'),
+        ListTile(
+          leading: const Icon(Icons.error_outline, color: Colors.red),
+          title: Text(mainProvider.errorMessage),
         )
       ];
+    } finally {
+      mainProvider.setLoading(false);
     }
   }
 
   Future<void> _getCurrentLocation() async {
     if (!mounted) return;
 
+    final mainProvider = Provider.of<MainProvider>(context, listen: false);
+    mainProvider.setLoading(true);
+    mainProvider.clearError();
+
     try {
       bool isLocationServiceEnabled =
           await Geolocator.isLocationServiceEnabled();
       if (!isLocationServiceEnabled) {
-        if (mounted) {
-          setState(() {
-            _locationMessage = "Location services are disabled.";
-          });
-        }
+        mainProvider.setError(
+            'Location services are disabled. Please enable location services and try again.');
         return;
       }
 
@@ -125,41 +135,27 @@ class _MyAppState extends State<MyApp> {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          if (mounted) {
-            setState(() {
-              _locationMessage = "Location permissions are denied.";
-            });
-          }
+          mainProvider.setError(
+              'Location permissions are denied. Please enable them in settings to use this feature.');
           return;
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        if (mounted) {
-          setState(() {
-            _locationMessage = "Location permissions are permanently denied.";
-          });
-        }
+        mainProvider.setError(
+            'Location permissions are permanently denied. Please enable them in settings to use this feature.');
         return;
       }
 
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
 
-      if (!mounted) return;
-
       final weatherData =
           await getWeather(position.latitude, position.longitude);
-
-      if (!mounted) return;
-
-      Provider.of<MainProvider>(context, listen: false)
-          .setWeatherData(weatherData);
+      mainProvider.setWeatherData(weatherData);
 
       final response = await http.get(Uri.parse(
           "https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}&addressdetails=1"));
-
-      if (!mounted) return;
 
       if (response.statusCode == 200) {
         final address = jsonDecode(response.body)["address"];
@@ -170,29 +166,25 @@ class _MyAppState extends State<MyApp> {
               address["suburb"] ??
               address["county"] ??
               "Unknown Location";
-
-          Provider.of<MainProvider>(context, listen: false)
-              .setCity(locationName);
+          mainProvider.setCity(locationName);
         }
       }
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _locationMessage = "Failed to fetch location.";
-        });
-      }
-      log("Error: $e");
+      mainProvider.setError(
+          'Failed to fetch location or weather data. Please check your connection and try again.');
+    } finally {
+      mainProvider.setLoading(false);
     }
   }
 
   // ignore: non_constant_identifier_names
   Future get_city(Position p) async {
-    if (!mounted) return; // Check before starting the operation
+    if (!mounted) return;
 
     var response = await http.Client().get(Uri.parse(
         "https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
 
-    if (!mounted) return; // Check again after the async operation
+    if (!mounted) return; 
 
     try {
       final address = jsonDecode(response.body)["address"];
@@ -216,13 +208,15 @@ class _MyAppState extends State<MyApp> {
         final data = jsonDecode(response.body);
         if (data['results'] != null) {
           return (data['results'] as List)
-              .map((result) => City(
-                    name: result['name'],
-                    region: result['admin1'] ?? '',
-                    country: result['country'] ?? '',
-                    latitude: result['latitude'].toDouble(),
-                    longitude: result['longitude'].toDouble(),
-                  ))
+              .map(
+                (result) => City(
+                  name: result['name'],
+                  region: result['admin1'] ?? '',
+                  country: result['country'] ?? '',
+                  latitude: result['latitude'].toDouble(),
+                  longitude: result['longitude'].toDouble(),
+                ),
+              )
               .toList();
         }
       }
@@ -239,7 +233,7 @@ class _MyAppState extends State<MyApp> {
             Uri.parse(
                 'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current=temperature_2m,weather_code,wind_speed_10m&hourly=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=GMT'),
           )
-          .timeout(const Duration(seconds: 10)); // Add timeout
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         return Weather.fromJson(jsonDecode(response.body));
