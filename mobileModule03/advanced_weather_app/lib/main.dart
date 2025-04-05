@@ -271,6 +271,7 @@ class _MyAppState extends State<MyApp> {
                 image: DecorationImage(
                   image: AssetImage('assets/images/back.png'),
                   fit: BoxFit.cover,
+                  opacity: 0.7,
                 ),
               ),
               child: PageView(

@@ -1,9 +1,10 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherappv2_proj/viewmodels/main_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class TodayPage extends StatefulWidget {
   const TodayPage({super.key});
@@ -81,6 +82,9 @@ class _TodayPageState extends State<TodayPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the current orientation
+    final orientation = MediaQuery.of(context).orientation;
+
     return Consumer<MainProvider>(builder: (context, provider, child) {
       final weatherData = provider.weatherData;
       final city = provider.city;
@@ -125,6 +129,130 @@ class _TodayPageState extends State<TodayPage> {
         }
       }
 
+      // If in landscape mode, use a Row layout instead of Column
+      if (orientation == Orientation.landscape) {
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left side: Chart
+            Expanded(
+              flex: 1,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Today's Forecast for $city",
+                      style: const TextStyle(
+                        fontFamily: 'my',
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (todayIndices.isNotEmpty)
+                    Expanded(
+                      child: _buildTemperatureChart(hourly, todayIndices),
+                    ),
+                ],
+              ),
+            ),
+            // Right side: Hourly forecast list
+            Expanded(
+              flex: 1,
+              child: todayIndices.isEmpty
+                  ? const Center(child: Text('No data for today'))
+                  : ListView.builder(
+                      itemCount: todayIndices.length,
+                      itemBuilder: (context, index) {
+                        final idx = todayIndices[index];
+                        final hourString = hourly.time![idx].substring(11, 16);
+                        final temp = hourly.temperature2m![idx];
+                        final weatherCode = hourly.weatherCode![idx];
+                        final windSpeed = hourly.windSpeed10m![idx];
+
+                        return Card(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                // Time
+                                SizedBox(
+                                  width: 50,
+                                  child: Text(
+                                    hourString,
+                                    style: const TextStyle(
+                                      fontFamily: 'my',
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                // Weather icon
+                                SizedBox(
+                                  width: 40,
+                                  child: Icon(
+                                    getWeatherIcon(weatherCode),
+                                    size: 24,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                // Temperature and description
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${temp.toStringAsFixed(1)}°C',
+                                        style: const TextStyle(
+                                          fontFamily: 'my',
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      Text(
+                                        getWeatherDescription(weatherCode),
+                                        style: const TextStyle(
+                                          fontFamily: 'my',
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Wind speed
+                                Row(
+                                  children: [
+                                    const Icon(Icons.air,
+                                        size: 14, color: Colors.grey),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      '$windSpeed.toStringAsFixed(1)}',
+                                      style: const TextStyle(
+                                        fontFamily: 'my',
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        );
+      }
+
+      // Default portrait layout
       return Column(
         children: [
           Padding(
@@ -133,13 +261,20 @@ class _TodayPageState extends State<TodayPage> {
               "Today's Forecast for $city",
               style: const TextStyle(
                 fontFamily: 'my',
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
               ),
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 8),
+          // ffixed height in portrait mode
+          if (todayIndices.isNotEmpty)
+            SizedBox(
+              height: 200,
+              child: _buildTemperatureChart(hourly, todayIndices),
+            ),
+          // Hourly forecast list
           Expanded(
             child: todayIndices.isEmpty
                 ? const Center(child: Text('No data for today'))
@@ -180,7 +315,7 @@ class _TodayPageState extends State<TodayPage> {
                                   color: Colors.blue,
                                 ),
                               ),
-                              // Temperature and description
+                              // Temperature and descriptions
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,6 +364,195 @@ class _TodayPageState extends State<TodayPage> {
         ],
       );
     });
+  }
+
+  Widget _buildTemperatureChart(dynamic hourly, List<int> todayIndices) {
+    final spots = <FlSpot>[];
+    final hourLabels = <String>[];
+
+    double minY = double.infinity;
+    double maxY = double.negativeInfinity;
+
+    for (int i = 0; i < todayIndices.length; i++) {
+      final idx = todayIndices[i];
+      final temp = hourly.temperature2m![idx].toDouble();
+      spots.add(FlSpot(i.toDouble(), temp));
+
+      // Update min and max temperature
+      if (temp < minY) minY = temp;
+      if (temp > maxY) maxY = temp;
+
+      // Add hour label
+      final hourString = hourly.time![idx].substring(11, 13);
+      hourLabels.add(hourString);
+    }
+
+    // Add padding to min and max for better visualization
+    minY = (minY - 2).floorToDouble();
+    maxY = (maxY + 2).ceilToDouble();
+
+    return Container(
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Temperature (°C)',
+            style: TextStyle(
+              fontFamily: 'my',
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: true,
+                  getDrawingHorizontalLine: (value) {
+                    return FlLine(
+                      color: Colors.white.withOpacity(0.2),
+                      strokeWidth: 1,
+                    );
+                  },
+                  getDrawingVerticalLine: (value) {
+                    return FlLine(
+                      color: Colors.white.withOpacity(0.2),
+                      strokeWidth: 1,
+                    );
+                  },
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 30,
+                      interval: 3,
+                      getTitlesWidget: (value, meta) {
+                        if (MediaQuery.of(context).orientation ==
+                            Orientation.landscape) {
+                          if (value.toInt() % 4 != 0 &&
+                              value.toInt() != todayIndices.length - 1) {
+                            return const SizedBox();
+                          }
+                        } else {
+                          // For portrait mode
+                          if (value.toInt() % 3 != 0 &&
+                              value.toInt() != todayIndices.length - 1) {
+                            return const SizedBox();
+                          }
+                        }
+
+                        final index = value.toInt();
+                        if (index >= 0 && index < hourLabels.length) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              '${hourLabels[index]}:00',
+                              style: TextStyle(
+                                fontFamily: 'my',
+                                color: Colors.white.withOpacity(0.7),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          );
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                  ),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 5,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          '${value.toInt()}°',
+                          style: TextStyle(
+                            fontFamily: 'my',
+                            color: Colors.white.withOpacity(0.7),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        );
+                      },
+                      reservedSize: 40,
+                    ),
+                  ),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: Colors.white.withOpacity(0.2)),
+                ),
+                minX: 0,
+                maxX: (todayIndices.length - 1).toDouble(),
+                minY: minY,
+                maxY: maxY,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: spots,
+                    isCurved: true,
+                    color: Colors.blue,
+                    barWidth: 3,
+                    isStrokeCapRound: true,
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (spot, percent, barData, index) {
+                        return FlDotCirclePainter(
+                          radius: 4,
+                          color: Colors.white,
+                          strokeWidth: 2,
+                          strokeColor: Colors.blue,
+                        );
+                      },
+                    ),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: Colors.blue.withOpacity(0.3),
+                    ),
+                  ),
+                ],
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    // tooltipBgColor: Colors.blueAccent,
+                    getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                      return touchedBarSpots.map((barSpot) {
+                        final index = barSpot.x.toInt();
+                        final hourString = hourLabels[index];
+                        return LineTooltipItem(
+                          '$hourString:00\n${barSpot.y.toStringAsFixed(1)}°C',
+                          const TextStyle(
+                            fontFamily: 'my',
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildErrorWidget(String message) {

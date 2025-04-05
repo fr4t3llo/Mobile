@@ -59,6 +59,22 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
     }
   }
 
+  IconData getWeatherIcon(int? weatherCode) {
+    if (weatherCode == null) return Icons.question_mark;
+
+    if (weatherCode == 0) return Icons.wb_sunny;
+    if (weatherCode >= 1 && weatherCode <= 3) return Icons.cloud;
+    if (weatherCode >= 45 && weatherCode <= 48) return Icons.foggy;
+    if (weatherCode >= 51 && weatherCode <= 57) return Icons.grain;
+    if (weatherCode >= 61 && weatherCode <= 67) return Icons.water_drop;
+    if (weatherCode >= 71 && weatherCode <= 77) return Icons.ac_unit;
+    if (weatherCode >= 80 && weatherCode <= 82) return Icons.beach_access;
+    if (weatherCode >= 85 && weatherCode <= 86) return Icons.snowing;
+    if (weatherCode >= 95) return Icons.flash_on;
+
+    return Icons.question_mark;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<MainProvider>(builder: (context, provider, child) {
@@ -132,12 +148,12 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
                   city,
                   style: const TextStyle(
                     fontFamily: 'my',
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 32,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 40),
                 // Temperature
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -147,6 +163,7 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
                       temperatureC?.toStringAsFixed(1) ?? '--',
                       style: const TextStyle(
                         fontFamily: 'my',
+                        color: Colors.amber,
                         fontWeight: FontWeight.bold,
                         fontSize: 70,
                       ),
@@ -155,6 +172,7 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
                       '°C',
                       style: TextStyle(
                         fontFamily: 'my',
+                        color: Colors.amber,
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
                       ),
@@ -166,18 +184,32 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
                 Text(
                   getWeatherDescription(weatherCode),
                   style: const TextStyle(
+                    color: Colors.white,
                     fontFamily: 'my',
                     fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 50,
+                  child: Icon(
+                    getWeatherIcon(weatherCode),
+                    size: 70,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(height: 10),
                 // Wind speed
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.air, size: 24),
+                    const Icon(
+                      Icons.air,
+                      size: 24,
+                      color: Colors.blue,
+                    ),
                     const SizedBox(width: 10),
                     Text(
                       'Wind: ${windSpeed?.toStringAsFixed(1) ?? '--'} km/h',
