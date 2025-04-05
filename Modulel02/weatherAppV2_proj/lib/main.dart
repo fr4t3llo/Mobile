@@ -260,10 +260,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       debugShowCheckedModeBanner: false,
       home: Consumer<MainProvider>(
         builder: (context, value, child) => Scaffold(
           body: PageView(
+
             scrollDirection: Axis.horizontal,
             controller: _pageController,
             children: content,
