@@ -1,4 +1,3 @@
-
 // ignore_for_file: use_build_context_synchronously, unused_field, depend_on_referenced_packages
 import 'dart:convert';
 import 'dart:developer';
@@ -52,15 +51,17 @@ class _MyAppState extends State<MyApp> {
     }
 
     final mainProvider = Provider.of<MainProvider>(context, listen: false);
- if (!mainProvider.hasInternetConnection) {
-    return [
-     const  ListTile(
-        leading:  Icon(Icons.signal_wifi_off, color: Colors.red),
-        title:  Text('No internet connection'),
-        subtitle:  Text('Please check your connection and try again'),
-      )
-    ];
-  }
+
+    // Check for internet connection
+    if (!mainProvider.hasInternetConnection) {
+      return [
+        const ListTile(
+          leading: Icon(Icons.signal_wifi_off, color: Colors.red),
+          title: Text('No internet connection'),
+          subtitle: Text('Please check your connection and try again'),
+        )
+      ];
+    }
 
     mainProvider.setLoading(true);
     mainProvider.clearError();
@@ -79,7 +80,9 @@ class _MyAppState extends State<MyApp> {
         ];
       }
 
-      return cities.map((city) => ListTile(
+      final limitedCities = cities.take(5);
+
+      return limitedCities.map((city) => ListTile(
             title: Text(city.name),
             subtitle: Text('${city.region}, ${city.country}'),
             onTap: () async {
@@ -92,7 +95,6 @@ class _MyAppState extends State<MyApp> {
                     await getWeather(city.latitude, city.longitude);
                 mainProvider.setWeatherData(weatherData);
                 mainProvider.setCity(city.name);
-                // mainProvider.setCountry(city.country);
               } catch (e) {
                 mainProvider.setError(
                     'Failed to fetch weather data. Please check your connection and try again.');
@@ -184,7 +186,7 @@ class _MyAppState extends State<MyApp> {
     var response = await http.Client().get(Uri.parse(
         "https://nominatim.openstreetmap.org/reverse?format=json&lat=${p.latitude}&lon=${p.longitude}&addressdetails=1"));
 
-    if (!mounted) return; 
+    if (!mounted) return;
 
     try {
       final address = jsonDecode(response.body)["address"];
@@ -263,15 +265,25 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: Consumer<MainProvider>(
         builder: (context, value, child) => Scaffold(
-          body: PageView(
-            scrollDirection: Axis.horizontal,
-            controller: _pageController,
-            children: content,
-            onPageChanged: (value) {
-              setState(() {
-                _index = value;
-              });
-            },
+          body: Scaffold(
+            body: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/back.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: PageView(
+                scrollDirection: Axis.horizontal,
+                controller: _pageController,
+                children: content,
+                onPageChanged: (value) {
+                  setState(() {
+                    _index = value;
+                  });
+                },
+              ),
+            ),
           ),
           bottomNavigationBar: BottomNavigationBar(
             backgroundColor: const Color.fromARGB(255, 0, 174, 255),
@@ -311,6 +323,8 @@ class _MyAppState extends State<MyApp> {
           ),
           appBar: AppBar(
             backgroundColor: const Color.fromARGB(255, 0, 174, 255),
+            // backgroundColor: Colors.transparent,
+            elevation: 0,
             actions: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
