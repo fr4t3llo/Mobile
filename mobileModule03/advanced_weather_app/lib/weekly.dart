@@ -107,6 +107,7 @@ class _WeeklyPageState extends State<WeeklyPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'my',
+              color: Colors.white,
               fontSize: 18,
             ),
           ),

@@ -97,6 +97,7 @@ class _TodayPageState extends State<TodayPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'my',
+              color: Colors.white,
               fontSize: 18,
             ),
           ),
@@ -110,10 +111,8 @@ class _TodayPageState extends State<TodayPage> {
           child: Text(
             'No hourly data available',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'my',
-              fontSize: 18,
-            ),
+            style:
+                TextStyle(fontFamily: 'my', fontSize: 18, color: Colors.white),
           ),
         );
       }

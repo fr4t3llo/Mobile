@@ -122,10 +122,8 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
           child: Text(
             'Loading weather data...\nPlease search for a location.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'my',
-              fontSize: 18,
-            ),
+            style:
+                TextStyle(fontFamily: 'my', fontSize: 18, color: Colors.white),
           ),
         );
       }
@@ -214,9 +212,7 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
                     Text(
                       'Wind: ${windSpeed?.toStringAsFixed(1) ?? '--'} km/h',
                       style: const TextStyle(
-                        fontFamily: 'my',
-                        fontSize: 18,
-                      ),
+                          fontFamily: 'my', fontSize: 18, color: Colors.white),
                     ),
                   ],
                 ),
@@ -245,7 +241,7 @@ class _CurrentlyPageState extends State<CurrentlyPage> {
             style: const TextStyle(
               fontFamily: 'my',
               fontSize: 18,
-              color: Colors.grey,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 16),
