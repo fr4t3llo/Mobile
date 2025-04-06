@@ -24,13 +24,14 @@ class _LoginPageState extends State<LoginPage> {
         ),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+
             children: [
               Text(
-                'data',
+                'Welcome to your diary',
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: 'my',
+                  fontFamily: 'my_2',
                   fontWeight: FontWeight.bold,
                   fontSize: 30,
                 ),
@@ -49,13 +50,13 @@ class _LoginPageState extends State<LoginPage> {
                       Text(
                         'login',
                         style: TextStyle(
-                          color: const Color.fromARGB(255, 221, 107, 0),
+                          color: Colors.orange,
                           fontFamily: 'my',
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                         ),
                       ),
-                      Icon(Icons.login),
+                      Icon(Icons.login, size: 26, color: Colors.orange),
                     ],
                   ),
                 ),
