@@ -81,7 +81,7 @@ class _DiarypageState extends State<Diarypage> {
                   ],
                 ),
 
-                
+            
                 const SizedBox(height: 20),
                 Container(
                   color: Colors.white,
