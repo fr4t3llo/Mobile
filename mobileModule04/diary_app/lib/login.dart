@@ -51,6 +51,7 @@ class _LoginPageState extends State<LoginPage> {
           .signInWithCredential(credential);
 
       debugPrint(userCredential.user?.displayName);
+      debugPrint(userCredential.user?.email);
 
       navigateToDiaryPage();
     } catch (e) {
@@ -64,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Container(
         decoration: BoxDecoration(
           color: Colors.black.withValues(blue: 0.9),
