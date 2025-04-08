@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:diary_app/diarypage.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      checkUserAuthentication();
+      // checkUserAuthentication();
     });
   }
 
@@ -63,11 +64,12 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: Container(
         decoration: BoxDecoration(
           color: Colors.black.withValues(blue: 0.9),
           image: DecorationImage(
-            image: AssetImage('assets/images/back.jpg'),
+            image: AssetImage('assets/images/back.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -76,6 +78,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
+                textAlign: TextAlign.center,
                 'Welcome to your diary',
                 style: TextStyle(
                   color: Colors.white,
@@ -86,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(
                 height: 50,
-                width: MediaQuery.of(context).size.width * 40 / 100,
+                width: MediaQuery.of(context).size.width * 70 / 100,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
@@ -95,10 +98,15 @@ class _LoginPageState extends State<LoginPage> {
                     signInWithGoogle();
                   },
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      IconButton(
+                        icon: FaIcon(FontAwesomeIcons.google),
+                        onPressed: () {},
+                      ),
+
                       Text(
-                        'login',
+                        'login with Google',
                         style: TextStyle(
                           color: Colors.orange,
                           fontFamily: 'my',
@@ -106,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 20,
                         ),
                       ),
-                      Icon(Icons.login, size: 26, color: Colors.orange),
+                      // Icon(Icons.login, size: 26, color: Colors.orange),
                     ],
                   ),
                 ),
@@ -118,4 +126,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
