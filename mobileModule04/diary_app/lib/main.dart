@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.indigo,
-        fontFamily: 'my_2', // Your custom font
+        fontFamily: 'my_2',
       ),
       // Check if user is already logged in
       home: StreamBuilder<User?>(
@@ -35,8 +35,6 @@ class MyApp extends StatelessWidget {
             // User is logged in, go to diary page
             return Diarypage();
           }
-
-          // User is not logged in, go to login page
           return LoginPage();
         },
       ),

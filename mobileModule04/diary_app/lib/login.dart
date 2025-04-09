@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,17 +17,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      // checkUserAuthentication();
-    });
-  }
-
-  void checkUserAuthentication() {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-
-    if (currentUser != null) {
-      navigateToDiaryPage();
-    }
   }
 
   void navigateToDiaryPage() {
@@ -36,23 +27,20 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signInWithGoogle() async {
     try {
-      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return;
 
-      GoogleSignInAuthentication? googleAuth = await googleUser.authentication;
-
-      AuthCredential credential = GoogleAuthProvider.credential(
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential = await FirebaseAuth.instance
+      final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCredential(credential);
 
-      debugPrint(userCredential.user?.displayName);
-      debugPrint(userCredential.user?.email);
-
+      debugPrint('Signed in: ${userCredential.user?.displayName}');
       navigateToDiaryPage();
     } catch (e) {
       debugPrint('Error signing in with Google: $e');
@@ -67,7 +55,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Colors.black.withValues(blue: 0.9),
           image: DecorationImage(
             image: AssetImage('assets/images/back.png'),
             fit: BoxFit.cover,
@@ -78,8 +65,8 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                textAlign: TextAlign.center,
                 'Welcome to your diary',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'my_2',
@@ -89,24 +76,19 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(
                 height: 50,
-                width: MediaQuery.of(context).size.width * 70 / 100,
+                width: MediaQuery.of(context).size.width * 0.7,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                   ),
-                  onPressed: () {
-                    signInWithGoogle();
-                  },
+                  onPressed: signInWithGoogle,
                   child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        icon: FaIcon(FontAwesomeIcons.google),
-                        onPressed: () {},
-                      ),
-
+                      FaIcon(FontAwesomeIcons.google, color: Colors.orange),
+                      SizedBox(width: 12),
                       Text(
-                        'login with Google',
+                        'Login with Google',
                         style: TextStyle(
                           color: Colors.orange,
                           fontFamily: 'my',
@@ -114,7 +96,6 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 20,
                         ),
                       ),
-                      // Icon(Icons.login, size: 26, color: Colors.orange),
                     ],
                   ),
                 ),
