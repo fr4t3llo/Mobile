@@ -13,7 +13,7 @@ class Diarypage extends StatefulWidget {
 }
 
 class _DiarypageState extends State<Diarypage> {
-  var parser = EmojiParser();
+  // var parser = EmojiParser();
   // var coffee = Emoji('coffee', '☕');
   // var heart = Emoji('heart', '❤️');
   final titleContorller = TextEditingController();
@@ -80,9 +80,6 @@ class _DiarypageState extends State<Diarypage> {
                     ),
                   ],
                 ),
-
-                
-
                 const SizedBox(height: 20),
                 Container(
                   color: Colors.white,
