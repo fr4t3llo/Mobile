@@ -3,10 +3,12 @@ import 'package:diary_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const Diarypage());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,10 +17,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Diary App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.indigo,
+        fontFamily: 'my_2', // Your custom font
       ),
-      home: const LoginPage(),
+      // Check if user is already logged in
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasData && snapshot.data != null) {
+            // User is logged in, go to diary page
+            return Diarypage();
+          }
+
+          // User is not logged in, go to login page
+          return LoginPage();
+        },
+      ),
+      initialRoute: '/',
+      routes: {
+        // '/': (context) => LoginPage(),
+        '/diary': (context) => Diarypage(),
+      },
     );
   }
 }

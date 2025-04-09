@@ -43,6 +43,7 @@ dependencies:
   google_sign_in: ^6.3.0
   flutter_emoji: ^2.5.1
   emoji_picker_flutter: ^4.3.0
+  intl: ^0.20.2
 
 
 dev_dependencies:
