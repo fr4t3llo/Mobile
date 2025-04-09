@@ -40,6 +40,8 @@ class _LoginPageState extends State<LoginPage> {
       final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithCredential(credential);
 
+
+
       debugPrint('Signed in: ${userCredential.user?.displayName}');
       navigateToDiaryPage();
     } catch (e) {
