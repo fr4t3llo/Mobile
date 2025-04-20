@@ -5,7 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:diary_app/agenda_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:diary_app/newdiary.dart';
 import 'package:diary_app/details.dart';
 
@@ -22,6 +24,8 @@ class _DiarypageState extends State<Diarypage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  Map<String, int> _feelingsCount = {};
+  int _totalEntries = 0;
 
   @override
   void initState() {
@@ -34,6 +38,33 @@ class _DiarypageState extends State<Diarypage> {
       _currentUser = _auth.currentUser;
       _isLoading = false;
     });
+    if (_currentUser != null) {
+      _loadFeelingsStats();
+    }
+  }
+
+  Future<void> _loadFeelingsStats() async {
+    try {
+      final snapshot =
+          await _firestore
+              .collection('diary_entries')
+              .where('userId', isEqualTo: _currentUser?.uid)
+              .get();
+
+      Map<String, int> feelingsMap = {};
+      snapshot.docs.forEach((doc) {
+        final data = doc.data();
+        final emoji = data['emoji'] ?? '📝';
+        feelingsMap[emoji] = (feelingsMap[emoji] ?? 0) + 1;
+      });
+
+      setState(() {
+        _feelingsCount = feelingsMap;
+        _totalEntries = snapshot.docs.length;
+      });
+    } catch (e) {
+      debugPrint("Error loading feelings stats: $e");
+    }
   }
 
   Future<void> _signOut(BuildContext context) async {
@@ -62,6 +93,7 @@ class _DiarypageState extends State<Diarypage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Entry deleted successfully')),
         );
+        _loadFeelingsStats(); // Reload stats after deletion
       }
     } catch (e) {
       if (mounted) {
@@ -84,6 +116,7 @@ class _DiarypageState extends State<Diarypage> {
 
     // Refresh the diary list if a new entry was added
     if (result == true) {
+      _loadFeelingsStats();
       setState(() {});
     }
   }
@@ -165,23 +198,9 @@ class _DiarypageState extends State<Diarypage> {
                   ),
                 ),
                 const SizedBox(height: 5),
-                FutureBuilder<QuerySnapshot>(
-                  future:
-                      _firestore
-                          .collection('diary_entries')
-                          .where('userId', isEqualTo: _currentUser?.uid)
-                          .get(),
-                  builder: (context, snapshot) {
-                    int entryCount =
-                        snapshot.hasData ? snapshot.data!.docs.length : 0;
-                    return Text(
-                      '$entryCount diary entries',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 16,
-                      ),
-                    );
-                  },
+                Text(
+                  '$_totalEntries diary entries',
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
                 ),
               ],
             ),
@@ -191,13 +210,14 @@ class _DiarypageState extends State<Diarypage> {
     );
   }
 
-  Widget _buildEntryList() {
+  Widget _buildRecentEntries() {
     return StreamBuilder<QuerySnapshot>(
       stream:
           _firestore
               .collection('diary_entries')
               .where('userId', isEqualTo: _currentUser?.uid)
               .orderBy('date', descending: true)
+              .limit(2) // Limit to last 2 entries
               .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -253,6 +273,8 @@ class _DiarypageState extends State<Diarypage> {
         }
 
         return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (BuildContext context, int index) {
             final doc = snapshot.data!.docs[index];
@@ -263,6 +285,93 @@ class _DiarypageState extends State<Diarypage> {
           },
         );
       },
+    );
+  }
+
+  Widget _buildFeelingsPercentage() {
+    if (_feelingsCount.isEmpty) {
+      return const Center(
+        child: Text(
+          'No feelings data available',
+          style: TextStyle(color: Colors.white),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Your Feelings',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.indigo,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ..._feelingsCount.entries.map((entry) {
+            final percentage =
+                (_totalEntries > 0)
+                    ? (entry.value / _totalEntries * 100).toStringAsFixed(1)
+                    : '0.0';
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                children: [
+                  Text(entry.key, style: const TextStyle(fontSize: 22)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor:
+                              _totalEntries > 0
+                                  ? entry.value / _totalEntries
+                                  : 0,
+                          child: Container(
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.indigo.shade300,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    '$percentage%',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ],
+      ),
     );
   }
 
@@ -311,12 +420,20 @@ class _DiarypageState extends State<Diarypage> {
             data['title'] ?? 'No Title',
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Text(
-              DateFormat('MMM dd, yyyy').format(date),
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
-            ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 4),
+              Text(
+                DateFormat('MMM dd, yyyy').format(date),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Feeling: ${data['emoji'] ?? '📝'}',
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+              ),
+            ],
           ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
@@ -352,7 +469,10 @@ class _DiarypageState extends State<Diarypage> {
       MaterialPageRoute(
         builder: (context) => DiaryDetailPage(entry: data, documentId: docId),
       ),
-    );
+    ).then((_) {
+      // Refresh stats when returning from details page in case of changes
+      _loadFeelingsStats();
+    });
   }
 
   Widget _buildUserNotLoggedIn() {
@@ -375,6 +495,107 @@ class _DiarypageState extends State<Diarypage> {
     );
   }
 
+  Widget _buildAllEntries() {
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder:
+              (context) => DraggableScrollableSheet(
+                initialChildSize: 0.9,
+                minChildSize: 0.5,
+                maxChildSize: 0.95,
+                expand: false,
+                builder: (context, scrollController) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'All Diary Entries',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                          ],
+                        ),
+                        const Divider(),
+                        Expanded(
+                          child: StreamBuilder<QuerySnapshot>(
+                            stream:
+                                _firestore
+                                    .collection('diary_entries')
+                                    .where(
+                                      'userId',
+                                      isEqualTo: _currentUser?.uid,
+                                    )
+                                    .orderBy('date', descending: true)
+                                    .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+
+                              if (!snapshot.hasData ||
+                                  snapshot.data!.docs.isEmpty) {
+                                return const Center(
+                                  child: Text('No entries found'),
+                                );
+                              }
+
+                              return ListView.builder(
+                                controller: scrollController,
+                                itemCount: snapshot.data!.docs.length,
+                                itemBuilder: (context, index) {
+                                  final doc = snapshot.data!.docs[index];
+                                  final data =
+                                      doc.data() as Map<String, dynamic>;
+                                  final date =
+                                      (data['date'] as Timestamp).toDate();
+
+                                  return _buildEntryCard(doc.id, data, date);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.indigo.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Text(
+          'View All Entries',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -390,6 +611,28 @@ class _DiarypageState extends State<Diarypage> {
       appBar: AppBar(
         elevation: 0,
         actions: [
+          // Add calendar button
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: const Icon(
+                Icons.calendar_month,
+                color: Colors.white,
+                size: 24,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AgendaPage()),
+                ).then((_) {
+                  // Refresh stats when returning from agenda page
+                  _loadFeelingsStats();
+                });
+              },
+              tooltip: 'Calendar View',
+            ),
+          ),
+          // Existing logout button
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: IconButton(
@@ -399,12 +642,13 @@ class _DiarypageState extends State<Diarypage> {
                 size: 20,
               ),
               onPressed: () => _signOut(context),
+              tooltip: 'Logout',
             ),
           ),
         ],
         backgroundColor: Colors.transparent,
         title: const Text(
-          'Your Diary Entries',
+          'Your Diary',
           style: TextStyle(
             color: Colors.white,
             fontFamily: 'my_2',
@@ -417,6 +661,7 @@ class _DiarypageState extends State<Diarypage> {
         backgroundColor: Colors.indigo,
         child: const Icon(Icons.add, color: Colors.white),
       ),
+
       body: Container(
         padding: EdgeInsets.only(
           top: kToolbarHeight + MediaQuery.of(context).padding.top,
@@ -427,34 +672,65 @@ class _DiarypageState extends State<Diarypage> {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildProfileSection(),
               const SizedBox(height: 20),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                  child: Text(
-                    'Recent Entries',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          blurRadius: 4.0,
-                          color: Colors.black,
-                          offset: Offset(1.0, 1.0),
-                        ),
-                      ],
+
+              // Recent entries section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      'Recent Entries',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 4.0,
+                            color: Colors.black,
+                            offset: Offset(1.0, 1.0),
+                          ),
+                        ],
+                      ),
                     ),
+                  ),
+                  _buildAllEntries(),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _buildRecentEntries(),
+
+              const SizedBox(height: 20),
+
+              // Feelings percentage section
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text(
+                  'Feeling Statistics',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 4.0,
+                        color: Colors.black,
+                        offset: Offset(1.0, 1.0),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              Expanded(child: _buildEntryList()),
+              const SizedBox(height: 10),
+              _buildFeelingsPercentage(),
             ],
           ),
         ),
