@@ -1,4 +1,4 @@
-# diary_app
+# advanced_diary_app
 
 A new Flutter project.
 

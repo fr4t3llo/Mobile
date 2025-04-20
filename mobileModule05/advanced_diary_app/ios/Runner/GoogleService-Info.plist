@@ -2,18 +2,22 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CLIENT_ID</key>
+	<string>787625827594-nu9fkokm9obk5cmsbpicg5l3lbudajg0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.787625827594-nu9fkokm9obk5cmsbpicg5l3lbudajg0</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBCXU4VGCrPotuaEPCeBk4GEc19MWAs-gQ</string>
+	<string>AIzaSyCR1AQ8i_umJHngExmyIPciwwQyScU3UkY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>156866566360</string>
+	<string>787625827594</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.diaryApp</string>
+	<string>com.example.advancedDiaryApp</string>
 	<key>PROJECT_ID</key>
-	<string>diaryapp-621e9</string>
+	<string>advanced-diray-app</string>
 	<key>STORAGE_BUCKET</key>
-	<string>diaryapp-621e9.firebasestorage.app</string>
+	<string>advanced-diray-app.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:156866566360:ios:fee1fd0949699a10921fad</string>
+	<string>1:787625827594:ios:93a137de50a979302eaef3</string>
 </dict>
 </plist>

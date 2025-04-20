@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "787625827594",
+    "project_id": "advanced-diray-app",
+    "storage_bucket": "advanced-diray-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787625827594:android:62c44e107c2cbee42eaef3",
+        "android_client_info": {
+          "package_name": "com.example.advanced_diary_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787625827594-qb5se380q9iltt83guvkiatjpf3do177.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2ROY95IJLLUjG_hIAKwkhd8aszt9UwN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787625827594-qb5se380q9iltt83guvkiatjpf3do177.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "787625827594-nu9fkokm9obk5cmsbpicg5l3lbudajg0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.advancedDiaryApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

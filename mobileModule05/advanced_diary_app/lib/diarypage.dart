@@ -205,6 +205,7 @@ class _DiarypageState extends State<Diarypage> {
         }
 
         if (snapshot.hasError) {
+          debugPrint("${snapshot.error}");
           return Center(
             child: Text(
               'Error: ${snapshot.error}',

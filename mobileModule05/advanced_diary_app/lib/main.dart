@@ -16,32 +16,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Diary App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        fontFamily: 'my_2',
-      ),
-      // Check if user is already logged in
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+    return FutureBuilder(
+      future: Firebase.initializeApp(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MaterialApp(
+            title: 'Diary App',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(primarySwatch: Colors.indigo, fontFamily: 'my_2'),
+            home: StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasData) {
+                  return Diarypage();
+                }
+                return LoginPage();
+              },
+            ),
+            routes: {'/diary': (context) => Diarypage()},
+          );
+        }
 
-          if (snapshot.hasData && snapshot.data != null) {
-            // User is logged in, go to diary page
-            return Diarypage();
-          }
-          return LoginPage();
-        },
-      ),
-      initialRoute: '/',
-      routes: {
-        // '/': (context) => LoginPage(),
-        '/diary': (context) => Diarypage(),
+        // While Firebase is initializing
+        return const MaterialApp(
+          home: Scaffold(body: Center(child: CircularProgressIndicator())),
+        );
       },
     );
   }
