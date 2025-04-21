@@ -33,8 +33,11 @@ The course is divided into the following key modules:
    - Deep dive into mobile development tools and technologies (e.g., Swift, Kotlin)
    - Handling data storage and synchronization
    - Integrating third-party libraries and APIs
-   
-   ![Advanced Mobile Tech](path_to_image_of_advanced_mobile_technologies =250x250)
+   <img src="https://github.com/user-attachments/assets/ec99f447-2177-4e64-8ea2-ec3c2a374316" width="200" />
+   <img src="https://github.com/user-attachments/assets/bdc08312-79fc-4d1e-9a9d-96446755f126" width="200" />
+   <img src="https://github.com/user-attachments/assets/036883ec-3ecd-4501-8f3a-6b906c2c3482" width="200" />
+   <img src="https://github.com/user-attachments/assets/64200a31-0c39-4249-9b1f-2cf4fd671c32" width="200" />
+
 
 ## Daily Challenges and Learning Objectives
 
