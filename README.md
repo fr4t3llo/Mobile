@@ -23,7 +23,8 @@ The course is divided into the following key modules:
    - Principles of responsive and adaptive design
    - Practical approaches for creating intuitive user interfaces
    
-   ![UI Design Principles](path_to_image_of_ui_design_principles)
+   ![UI Design Principles]
+   ![Image](https://github.com/user-attachments/assets/2cde8e44-46e5-41b5-a812-2943e6440058)
 
 ### 4. **Module 4: Advanced Mobile Development**
    - Deep dive into mobile development tools and technologies (e.g., Swift, Kotlin)
