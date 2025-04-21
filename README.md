@@ -26,6 +26,11 @@ The course is divided into the following key modules:
    ![UI Design Principles]
    ![Image](https://github.com/user-attachments/assets/2cde8e44-46e5-41b5-a812-2943e6440058)
 
+![Image](https://github.com/user-attachments/assets/ae293247-6fd5-464a-af68-0eb20f028853)
+
+![Image](https://github.com/user-attachments/assets/b6b8ac77-3130-406c-b066-1378a8134e34)
+
+![Image](https://github.com/user-attachments/assets/dc5d4407-a9b6-4c8f-b300-2d1e5d22755e)
 ### 4. **Module 4: Advanced Mobile Development**
    - Deep dive into mobile development tools and technologies (e.g., Swift, Kotlin)
    - Handling data storage and synchronization
