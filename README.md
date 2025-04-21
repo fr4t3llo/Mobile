@@ -23,20 +23,17 @@ The course is divided into the following key modules:
    - Principles of responsive and adaptive design
    - Practical approaches for creating intuitive user interfaces
    
-   ![UI Design Principles]
-   ![Image](https://github.com/user-attachments/assets/2cde8e44-46e5-41b5-a812-2943e6440058)
+   ![UI Design Principles](https://github.com/user-attachments/assets/2cde8e44-46e5-41b5-a812-2943e6440058 =250x250) 
+   ![Image](https://github.com/user-attachments/assets/ae293247-6fd5-464a-af68-0eb20f028853 =250x250) 
+   ![Image](https://github.com/user-attachments/assets/b6b8ac77-3130-406c-b066-1378a8134e34 =250x250)
+   ![Image](https://github.com/user-attachments/assets/dc5d4407-a9b6-4c8f-b300-2d1e5d22755e =250x250)
 
-![Image](https://github.com/user-attachments/assets/ae293247-6fd5-464a-af68-0eb20f028853)
-
-![Image](https://github.com/user-attachments/assets/b6b8ac77-3130-406c-b066-1378a8134e34)
-
-![Image](https://github.com/user-attachments/assets/dc5d4407-a9b6-4c8f-b300-2d1e5d22755e)
 ### 4. **Module 4: Advanced Mobile Development**
    - Deep dive into mobile development tools and technologies (e.g., Swift, Kotlin)
    - Handling data storage and synchronization
    - Integrating third-party libraries and APIs
    
-   ![Advanced Mobile Tech](path_to_image_of_advanced_mobile_technologies)
+   ![Advanced Mobile Tech](path_to_image_of_advanced_mobile_technologies =250x250)
 
 ## Daily Challenges and Learning Objectives
 
@@ -59,13 +56,13 @@ Each challenge is designed to push you to explore new areas, implement what you'
    - Creating scalable layouts
    - Designing for various screen sizes and resolutions
      
-   ![Mobile UI Example](path_to_image_of_mobile_ui_example)
+   ![Mobile UI Example](path_to_image_of_mobile_ui_example =250x250)
 
 - **User Experience (UX) Design**
    - Understanding user behavior and expectations
    - Optimizing user flow and interactivity
    
-   ![UX Design Flow](path_to_image_of_ux_design_flow)
+   ![UX Design Flow](path_to_image_of_ux_design_flow =250x250)
 
 ### Tools Used:
 - **Figma**: For designing mockups and wireframes
@@ -81,4 +78,3 @@ This project will immerse you in real-world mobile app development. You’ll lea
 ## License
 
 Include licensing information here. Example:
-
