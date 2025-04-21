@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -52,11 +52,11 @@ class _DiarypageState extends State<Diarypage> {
               .get();
 
       Map<String, int> feelingsMap = {};
-      snapshot.docs.forEach((doc) {
+      for (var doc in snapshot.docs) {
         final data = doc.data();
         final emoji = data['emoji'] ?? '📝';
         feelingsMap[emoji] = (feelingsMap[emoji] ?? 0) + 1;
-      });
+      }
 
       setState(() {
         _feelingsCount = feelingsMap;
@@ -369,7 +369,7 @@ class _DiarypageState extends State<Diarypage> {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

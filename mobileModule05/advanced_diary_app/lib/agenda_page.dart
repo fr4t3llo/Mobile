@@ -1,4 +1,6 @@
 // agenda_page.dart
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:diary_app/details.dart';
 
 class AgendaPage extends StatefulWidget {
-  const AgendaPage({Key? key}) : super(key: key);
+  const AgendaPage({super.key});
 
   @override
   State<AgendaPage> createState() => _AgendaPageState();
