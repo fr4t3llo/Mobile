@@ -30,7 +30,7 @@ The course is divided into the following key modules:
 
 
 ### 4. **Module 4: Advanced Mobile Development**
-   - Deep dive into mobile development tools and technologies (e.g., Swift, Kotlin)
+   - Deep dive into mobile development tools and technologies (Flutter)
    - Handling data storage and synchronization
    - Integrating third-party libraries and APIs
    <img src="https://github.com/user-attachments/assets/ec99f447-2177-4e64-8ea2-ec3c2a374316" width="200" />
@@ -60,25 +60,18 @@ Each challenge is designed to push you to explore new areas, implement what you'
    - Creating scalable layouts
    - Designing for various screen sizes and resolutions
      
-   ![Mobile UI Example](path_to_image_of_mobile_ui_example =250x250)
 
 - **User Experience (UX) Design**
    - Understanding user behavior and expectations
    - Optimizing user flow and interactivity
-   
-   ![UX Design Flow](path_to_image_of_ux_design_flow =250x250)
+
 
 ### Tools Used:
 - **Figma**: For designing mockups and wireframes
-- **Sketch**: For building high-fidelity app designs
-- **Xcode / Android Studio**: For implementing design into actual mobile applications
+- **Xcode**: For implementing design into actual mobile applications
 
 ## Conclusion
 
 This project will immerse you in real-world mobile app development. You’ll learn important skills such as app design, navigation, and how to interact with different mobile platforms. Each module will challenge you to learn new tools and build practical experience that will serve you in future projects.
 
----
 
-## License
-
-Include licensing information here. Example:
