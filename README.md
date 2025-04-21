@@ -24,6 +24,7 @@ The course is divided into the following key modules:
    - Practical approaches for creating intuitive user interfaces
    
    ![UI Design Principles](https://github.com/user-attachments/assets/2cde8e44-46e5-41b5-a812-2943e6440058 =250x250) 
+   ![Image](https://github.com/user-attachments/assets/b6b8ac77-3130-406c-b066-1378a8134e34 =250x250)
    ![Image](https://github.com/user-attachments/assets/ae293247-6fd5-464a-af68-0eb20f028853 =250x250) 
    ![Image](https://github.com/user-attachments/assets/b6b8ac77-3130-406c-b066-1378a8134e34 =250x250)
    ![Image](https://github.com/user-attachments/assets/dc5d4407-a9b6-4c8f-b300-2d1e5d22755e =250x250)
