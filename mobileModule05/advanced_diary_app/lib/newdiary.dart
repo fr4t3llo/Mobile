@@ -65,7 +65,7 @@ class _NewEntryPageState extends State<NewEntryPage> {
         'date': Timestamp.now(),
       });
 
-      Navigator.pop(context, true); // Return true to indicate success
+      Navigator.pop(context, true);
     } catch (e) {
       ScaffoldMessenger.of(
         context,
